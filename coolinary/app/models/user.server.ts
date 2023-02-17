@@ -1,4 +1,6 @@
 import type { Password, User } from "@prisma/client";
+import { ObjectId } from 'bson';
+
 import bcrypt from "bcryptjs";
 
 import { prisma } from "~/db.server";
@@ -18,9 +20,11 @@ export async function createUser(email: User["email"], password: string) {
 
   return prisma.user.create({
     data: {
+      id: new ObjectId().toString(),
       email,
       password: {
         create: {
+          id: new ObjectId().toString(),
           hash: hashedPassword,
         },
       },
