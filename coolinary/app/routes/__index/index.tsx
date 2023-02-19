@@ -34,9 +34,9 @@ export default function Index() {
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="h-6 w-6 stroke-current">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                       <NavLink
-                        to={'/recipes/' + recipe.id}
+                        to={'/recipe/' + recipe.id}
                       >
-                        <span>Seleccionar</span>
+                        <span>Editar</span>
                       </NavLink>
                     </button>
                   </div>
@@ -47,7 +47,7 @@ export default function Index() {
         )}
       </div>
         
-      <Link to="/new" className="block p-4 text-xl text-blue-500">
+      <Link to="/recipe/new" className="block p-4 text-xl text-blue-500">
         + Add recipes
       </Link>
 

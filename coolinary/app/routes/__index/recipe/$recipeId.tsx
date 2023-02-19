@@ -8,31 +8,31 @@ import { requireUserId } from "~/session.server";
 
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
-  invariant(params.noteId, "noteId not found");
+  invariant(params.recipeId, "recipeId not found");
 
-  const note = await getRecipe({ userId, id: params.noteId });
-  if (!note) {
+  const recipe = await getRecipe({ userId, id: params.recipeId });
+  if (!recipe) {
     throw new Response("Not Found", { status: 404 });
   }
-  return json({ note });
+  return json({ recipe });
 }
 
 export async function action({ request, params }: ActionArgs) {
   const userId = await requireUserId(request);
-  invariant(params.noteId, "noteId not found");
+  invariant(params.recipeId, "recipeId not found");
 
-  await deleteRecipe({ userId, id: params.noteId });
+  await deleteRecipe({ userId, id: params.recipeId });
 
-  return redirect("/recipes");
+  return redirect("/recipe");
 }
 
-export default function NoteDetailsPage() {
+export default function RecipeDetailsPage() {
   const data = useLoaderData<typeof loader>();
 
   return (
     <div>
-      <h3 className="text-2xl font-bold">{data.note.title}</h3>
-      <p className="py-6">{data.note.body}</p>
+      <h3 className="text-2xl font-bold">{data.recipe.title}</h3>
+      <p className="py-6">{data.recipe.body}</p>
       <hr className="my-4" />
       <Form method="post">
         <button
@@ -56,7 +56,7 @@ export function CatchBoundary() {
   const caught = useCatch();
 
   if (caught.status === 404) {
-    return <div>Note not found</div>;
+    return <div>Recipe not found</div>;
   }
 
   throw new Error(`Unexpected caught response with status: ${caught.status}`);

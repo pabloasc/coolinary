@@ -1,4 +1,4 @@
-import type { User, Recipe } from "@prisma/client";
+import type { User, Recipe, Prisma } from "@prisma/client";
 import { ObjectId } from 'bson';
 
 import { prisma } from "~/db.server";
@@ -12,7 +12,7 @@ export function getRecipe({
   userId: User["id"];
 }) {
   return prisma.recipe.findFirst({
-    select: { id: true, body: true, title: true },
+    select: { id: true, body: true, title: true, ingredients: true },
     where: { id, userId },
   });
 }
@@ -20,7 +20,7 @@ export function getRecipe({
 export function getRecipeListItems({ userId }: { userId?: User["id"] }) {
   return prisma.recipe.findMany({
     where: { userId },
-    select: { id: true, title: true, body: true },
+    select: { id: true, title: true, body: true, ingredients: true },
     orderBy: { updatedAt: "desc" },
   });
 }
@@ -28,8 +28,9 @@ export function getRecipeListItems({ userId }: { userId?: User["id"] }) {
 export function createRecipe({
   body,
   title,
+  ingredients = {},
   userId,
-}: Pick<Recipe, "body" | "title"> & {
+}: Pick<Recipe, "body" | "title" | "ingredients"> & {
   userId: User["id"];
 }) {
   return prisma.recipe.create({
@@ -37,6 +38,7 @@ export function createRecipe({
       id: new ObjectId().toString(),
       title,
       body,
+      ingredients: ingredients as Prisma.JsonObject,
       user: {
         connect: {
           id: userId,
