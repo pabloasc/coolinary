@@ -10,11 +10,11 @@ import { requireUserId } from "~/session.server";
 
 export async function action({ request }: ActionArgs) {
   const userId = await requireUserId(request);
-
   const formData = await request.formData();
   const title = formData.get("title");
+  const ingredientsList = formData.get("ingredients")
+  const ingredients = JSON.parse(ingredientsList)
   const body = formData.get("body");
-  const ingredients = formData.get("ingredients");
 
   if (typeof title !== "string" || title.length === 0) {
     return json(
@@ -29,29 +29,41 @@ export async function action({ request }: ActionArgs) {
       { status: 400 }
     );
   }
-  if (typeof ingredients !== "string") {
+  
+  if (typeof ingredients !== "object") {
     return json(
       { errors: { title: null, ingredients: "Ingredients are required" } },
       { status: 400 }
     );
   }
-
+  
   const recipe = await createRecipe({ title, body, ingredients, userId });
 
   return redirect('/');
 }
 
 export default function NewRecipePage() {
-  const [items, setItems] = useState([{id: 0, description: 'cebolla'}, {id: 1, description: 'pimiento'}, {id: 2, description: 'pollo'}]);
   const actionData = useActionData<typeof action>();
   const titleRef = React.useRef<HTMLInputElement>(null);
-  const ingredientsRef = React.useRef<HTMLInputElement>(null);
+  const [items, setItems] = useState([{id: 1, description: ''}, {id: 2, description: ''}, {id: 3, description: ''}])
+  const addMoreIngredients = () => {
+    setItems([...items, { id: items.length + 1, description: '' }])
+  }
+  const updateIngredients = (newId: number, newDescription: string) => setItems(items.map(ingredient => {
+    if (ingredient.id === newId) {
+      // Create a *new* object with changes
+      return { ...ingredient, description: newDescription };
+    } else {
+      // No changes
+      return ingredient;
+    }
+  }))
 
   React.useEffect(() => {
     if (actionData?.errors?.title) {
       titleRef.current?.focus();
     } else if (actionData?.errors?.ingredients) {
-      ingredientsRef.current?.focus();
+      // ingredientsRef.current?.focus();
     }
   }, [actionData]);
 
@@ -69,7 +81,6 @@ export default function NewRecipePage() {
         <label className="flex w-full flex-col gap-1">
           <span>Title: </span>
           <input
-            ref={titleRef}
             name="title"
             className="input input-bordered input-sm w-full max-w-xs"
             aria-invalid={actionData?.errors?.title ? true : undefined}
@@ -84,37 +95,35 @@ export default function NewRecipePage() {
           </div>
         )}
       </div>
-
-      <SortableList
-        items={items}
-        onChange={setItems}
-        renderItem={(item) => (
-          <SortableList.Item id={item.id}>
-            {item.id}
-            <SortableList.DragHandle />
-          </SortableList.Item>
-        )}
-      />
-
       <div>
-        <label className="flex w-full flex-col gap-1">
-          <span>Ingredients: </span>
-          <input
-            ref={ingredientsRef}
-            name="ingredients"
-            placeholder="Type here"
-            className="input input-bordered input-xs w-full max-w-xs"
-            aria-invalid={actionData?.errors?.ingredients ? true : undefined}
-            aria-errormessage={
-              actionData?.errors?.ingredients ? "ingredients-error" : undefined
-            }
-          />
-        </label>
+        <SortableList
+          items={items}
+          onChange={setItems}
+          renderItem={(ingredient) => (
+            <SortableList.Item id={ingredient.id}>
+              <input
+                onChange={(event) => { updateIngredients(ingredient.id, event.target.value) }}
+                name="ingredient"
+                className="input input-bordered input-xs w-full max-w-xs"
+                aria-invalid={actionData?.errors?.ingredients ? true : undefined}
+                aria-errormessage={
+                  actionData?.errors?.ingredients ? "ingredients-error" : undefined
+                }
+            />
+              <SortableList.DragHandle />
+            </SortableList.Item>
+          )}
+        />
+        
+        <a onClick={addMoreIngredients}>Add more...</a>
+
         {actionData?.errors?.ingredients && (
           <div className="pt-1 text-red-700" id="body-error">
             {actionData.errors.ingredients}
           </div>
         )}
+
+        <input type="hidden" name="ingredients" value={JSON.stringify(items)}></input>
 
         <label className="flex w-full flex-col gap-1">
           <span>Preparation (Optional): </span>

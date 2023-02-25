@@ -5,9 +5,9 @@ export default function Index() {
   const user = useOptionalUser();
   return (
     <div className="flex h-full min-h-screen flex-col">
-    <header className="flex items-center justify-between p-4 text-black">
+    <header className="flex items-center justify-between p-4">
         
-        <div className="navbar bg-white rounded-box">
+        <div className="navbar rounded-box">
           <div className="flex-1 px-2 lg:flex-none">
             <h1 className="text-3xl font-bold">
               <Link to="/">coolinary</Link>
