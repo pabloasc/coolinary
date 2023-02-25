@@ -3,19 +3,16 @@ import { json, redirect } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
 import { SortableList } from "~/components";
 import React, { useState } from "react";
-
+import { Recipe } from "~/types"
 
 import { createRecipe } from "~/models/recipe.server";
 import { requireUserId } from "~/session.server";
 
-import { actionRequest } from "~/components/RecipeContainer"
-
-export async function action({ request }: ActionArgs) {
-  return actionRequest({ request })
+interface Props {
+  recipe?: Recipe
 }
 
-/*
-export async function action({ request }: ActionArgs) {
+export async function actionRequest({ request }: ActionArgs) {
   const userId = await requireUserId(request);
   const formData = await request.formData();
   const title = formData.get("title");
@@ -48,8 +45,10 @@ export async function action({ request }: ActionArgs) {
 
   return redirect('/');
 }
-*/
-export default function NewRecipePage() {
+
+export function RecipeContainer({
+  recipe
+}: Props) {
   const actionData = useActionData<typeof action>();
   const titleRef = React.useRef<HTMLInputElement>(null);
   const [items, setItems] = useState([{id: 1, description: ''}, {id: 2, description: ''}, {id: 3, description: ''}])

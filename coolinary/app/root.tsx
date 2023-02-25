@@ -31,7 +31,7 @@ export async function loader({ request }: LoaderArgs) {
 
 export default function App() {
   return (
-    <html data-theme="wireframe" lang="en" className="h-full">
+    <html data-theme="wireframe" lang="en">
       <head>
         <Meta />
         <Links />
