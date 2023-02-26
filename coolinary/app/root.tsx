@@ -14,7 +14,10 @@ import baseStylesheetUrl from "./styles/base.css";
 import { getUser } from "./session.server";
 
 export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: tailwindStylesheetUrl }, { rel: "stylesheet", href: baseStylesheetUrl }];
+  return [
+    { rel: "stylesheet", href: tailwindStylesheetUrl },
+    { rel: "stylesheet", href: baseStylesheetUrl },
+  ];
 };
 
 export const meta: MetaFunction = () => ({
@@ -31,7 +34,7 @@ export async function loader({ request }: LoaderArgs) {
 
 export default function App() {
   return (
-    <html data-theme="wireframe" lang="en">
+    <html data-theme="light" lang="en">
       <head>
         <Meta />
         <Links />
