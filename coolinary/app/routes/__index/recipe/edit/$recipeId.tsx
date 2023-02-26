@@ -6,6 +6,13 @@ import invariant from "tiny-invariant";
 import { deleteRecipe, getRecipe } from "~/models/recipe.server";
 import { requireUserId } from "~/session.server";
 
+import { actionRequest, RecipeContainer } from "~/components/RecipeContainer"
+
+export async function action({ request }: ActionArgs) {
+  return actionRequest({ request })
+}
+
+
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
   invariant(params.recipeId, "recipeId not found");
@@ -17,31 +24,12 @@ export async function loader({ request, params }: LoaderArgs) {
   return json({ recipe });
 }
 
-export async function action({ request, params }: ActionArgs) {
-  const userId = await requireUserId(request);
-  invariant(params.recipeId, "recipeId not found");
-
-  await deleteRecipe({ userId, id: params.recipeId });
-
-  return redirect("/recipe");
-}
-
-export default function RecipeDetailsPage() {
+export default function RecipeEditPage() {
   const data = useLoaderData<typeof loader>();
 
   return (
     <div>
-      <h3 className="text-2xl font-bold">{data.recipe.title}</h3>
-      <p className="py-6">{data.recipe.body}</p>
-      <hr className="my-4" />
-      <Form method="post">
-        <button
-          type="submit"
-          className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-        >
-          Delete
-        </button>
-      </Form>
+      <RecipeContainer recipe={data.recipe} />
     </div>
   );
 }

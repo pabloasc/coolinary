@@ -2,7 +2,7 @@ export type Recipe = {
     id: string,
     title: string,
     body:string,
-    ingredients: {
+    ingredients?: {
         id: string,
         description: string
     }[],

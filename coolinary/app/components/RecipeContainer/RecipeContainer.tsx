@@ -88,6 +88,7 @@ export function RecipeContainer({
           <span>Title: </span>
           <input
             name="title"
+            value={recipe?.title}
             className="input input-bordered input-sm w-full max-w-xs"
             aria-invalid={actionData?.errors?.title ? true : undefined}
             aria-errormessage={
