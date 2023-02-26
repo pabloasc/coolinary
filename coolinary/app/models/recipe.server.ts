@@ -1,5 +1,5 @@
 import type { User, Recipe, Prisma } from "@prisma/client";
-import { ObjectId } from 'bson';
+import { ObjectId } from "bson";
 
 import { prisma } from "~/db.server";
 
@@ -44,6 +44,24 @@ export function createRecipe({
           id: userId,
         },
       },
+    },
+  });
+}
+
+export function editRecipe({
+  id,
+  body,
+  title,
+  ingredients = {},
+}: Pick<Recipe, "id" | "body" | "title" | "ingredients">) {
+  return prisma.recipe.update({
+    where: {
+      id: id,
+    },
+    data: {
+      title,
+      body,
+      ingredients: ingredients as Prisma.JsonObject,
     },
   });
 }
