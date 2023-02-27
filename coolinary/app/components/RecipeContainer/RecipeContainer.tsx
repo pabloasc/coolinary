@@ -4,8 +4,9 @@ import { Form, useActionData } from "@remix-run/react";
 import { SortableList } from "~/components";
 import React, { useState } from "react";
 import { Recipe } from "~/types";
+import invariant from "tiny-invariant";
 
-import { createRecipe, editRecipe } from "~/models/recipe.server";
+import { deleteRecipe, createRecipe, editRecipe } from "~/models/recipe.server";
 import { requireUserId } from "~/session.server";
 
 interface Props {
@@ -18,8 +19,16 @@ export async function actionRequest({ request }: ActionArgs) {
   const id = formData.get("id");
   const title = formData.get("title");
   const ingredientsList = formData.get("ingredients");
+  const submit = formData.get("submit");
   const ingredients = JSON.parse(ingredientsList as string);
   const body = formData.get("body");
+
+  if (submit === "delete") {
+    if (typeof id === "string") {
+      await deleteRecipe({ userId, id: id });
+    }
+    return redirect("/");
+  }
 
   if (typeof title !== "string" || title.length === 0) {
     return json(
@@ -184,7 +193,18 @@ export function RecipeContainer({ recipe }: Props) {
 
       <div className="text-right">
         <button
+          name="submit"
           type="submit"
+          value="delete"
+          className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+        >
+          Delete
+        </button>
+
+        <button
+          name="submit"
+          type="submit"
+          value="add"
           className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
         >
           Save

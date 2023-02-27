@@ -12,7 +12,13 @@ export function getRecipe({
   userId: User["id"];
 }) {
   return prisma.recipe.findFirst({
-    select: { id: true, body: true, title: true, ingredients: true },
+    select: {
+      id: true,
+      body: true,
+      title: true,
+      ingredients: true,
+      userId: true,
+    },
     where: { id, userId },
   });
 }
