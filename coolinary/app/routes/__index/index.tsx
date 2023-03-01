@@ -3,6 +3,7 @@ import { Link, Form, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import { useOptionalUser } from "~/utils";
 import { getUserId } from "~/session.server";
+import { useState } from "react";
 import { getRecipeListItems } from "~/models/recipe.server";
 
 export async function loader({ request }: LoaderArgs) {
@@ -14,6 +15,28 @@ export async function loader({ request }: LoaderArgs) {
 export default function Index() {
   const user = useOptionalUser();
   const data = user ? useLoaderData<typeof loader>() : { recipeListItems: [] };
+  const [userinfo, setUserInfo] = useState({ selectedRecipes: [] });
+
+  const handleChange = (e) => {
+    // Destructuring
+    const { value, checked } = e.target;
+    const { selectedRecipes } = userinfo;
+
+    console.log(`${value} is ${checked}`);
+
+    // Case 1 : The user checks the box
+    if (checked) {
+      setUserInfo({
+        selectedRecipes: [...selectedRecipes, value],
+      });
+    }
+    // Case 2  : The user unchecks the box
+    else {
+      setUserInfo({
+        selectedRecipes: selectedRecipes.filter((e) => e !== value),
+      });
+    }
+  };
 
   return (
     <>
@@ -34,12 +57,19 @@ export default function Index() {
                           </span>
                           <input
                             type="checkbox"
-                            name="selectedRecipes"
+                            name="selectedRecipesCheckbox"
                             value={recipe.id}
                             className="checkbox-info checkbox"
+                            onChange={handleChange}
                           />
                         </label>
                       </div>
+
+                      <input
+                        type="hidden"
+                        name="selectedRecipesList"
+                        value={userinfo.selectedRecipes}
+                      ></input>
 
                       {recipe.ingredients?.map(
                         (ingredient: { id: number; description?: string }) => {
@@ -76,7 +106,10 @@ export default function Index() {
                 ))}
               </div>
             )}
-            <Link to="/recipe/new" className="block p-4 text-xl text-blue-500">
+            <Link
+              to="/recipe/new"
+              className="float-left block p-4 text-xl text-blue-500"
+            >
               + Add recipes
             </Link>
 
@@ -88,7 +121,7 @@ export default function Index() {
               name="submit"
               type="submit"
               value="shopping"
-              className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+              className="float-right rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
             >
               Create grocery shopping list
             </button>
