@@ -3,15 +3,14 @@ import { json, redirect } from "@remix-run/node";
 import { Form, useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
-import { deleteRecipe, getRecipe } from "~/models/recipe.server";
+import { getRecipe } from "~/models/recipe.server";
 import { requireUserId } from "~/session.server";
 
-import { actionRequest, RecipeContainer } from "~/components/RecipeContainer"
+import { actionRequest, RecipeContainer } from "~/components/RecipeContainer";
 
 export async function action({ request }: ActionArgs) {
-  return actionRequest({ request })
+  return actionRequest({ request });
 }
-
 
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);

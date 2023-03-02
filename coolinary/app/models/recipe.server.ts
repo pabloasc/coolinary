@@ -31,6 +31,20 @@ export function getRecipeListItems({ userId }: { userId?: User["id"] }) {
   });
 }
 
+export function getRecipeListByIds({
+  userId,
+  recipeList,
+}: {
+  userId?: User["id"];
+  recipeList: string[];
+}) {
+  return prisma.recipe.findMany({
+    where: { userId, id: { in: recipeList } },
+    select: { title: true, ingredients: true },
+    orderBy: { updatedAt: "desc" },
+  });
+}
+
 export function createRecipe({
   body,
   title,
