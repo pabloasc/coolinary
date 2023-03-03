@@ -48,7 +48,7 @@ export function getRecipeListByIds({
 export function createRecipe({
   body,
   title,
-  ingredients = {},
+  ingredients = [],
   userId,
 }: Pick<Recipe, "body" | "title" | "ingredients"> & {
   userId: User["id"];
@@ -58,7 +58,7 @@ export function createRecipe({
       id: new ObjectId().toString(),
       title,
       body,
-      ingredients: ingredients as Prisma.JsonObject,
+      ingredients: ingredients,
       user: {
         connect: {
           id: userId,
@@ -72,7 +72,7 @@ export function editRecipe({
   id,
   body,
   title,
-  ingredients = {},
+  ingredients = [],
 }: Pick<Recipe, "id" | "body" | "title" | "ingredients">) {
   return prisma.recipe.update({
     where: {
@@ -81,7 +81,7 @@ export function editRecipe({
     data: {
       title,
       body,
-      ingredients: ingredients as Prisma.JsonObject,
+      ingredients: ingredients,
     },
   });
 }

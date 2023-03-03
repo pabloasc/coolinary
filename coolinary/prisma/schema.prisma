@@ -7,27 +7,39 @@ generator client {
   provider = "prisma-client-js"
 }
 
+type Ingredient {
+  id Int
+  description String
+}
+
+type Item {
+  id Int
+  description String
+  recipe String
+}
+
 model User {
-  id String @id @map("_id")
-  email String @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  password Password?
-  recipes    Recipe[]
+  id        String     @id @map("_id")
+  email     String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  password  Password?
+  recipes   Recipe[]
+  shopping  Shopping[]
 }
 
 model Password {
-  id String @id @map("_id")
-  hash String
+  id     String @id @map("_id")
+  hash   String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String @unique
 }
 
 model Recipe {
-  id String @id @map("_id")
-  title String
-  body  String?
-  ingredients Json
+  id          String  @id @map("_id")
+  title       String
+  body        String?
+  ingredients Ingredient[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -37,10 +49,10 @@ model Recipe {
 }
 
 model Shopping {
-  id String @id @map("_id")
-  title String
-  body  String?
-  items Json
+  id     String  @id @map("_id")
+  title  String
+  body String?
+  items  Item[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
