@@ -7,15 +7,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
-type Ingredient {
-  id Int
-  description String
-}
-
 type Item {
   id Int
   description String
-  recipe String
+  recipe String?
 }
 
 model User {
@@ -39,7 +34,7 @@ model Recipe {
   id          String  @id @map("_id")
   title       String
   body        String?
-  ingredients Ingredient[]
+  ingredients Item[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -50,7 +45,7 @@ model Recipe {
 
 model Shopping {
   id     String  @id @map("_id")
-  title  String
+  title  String?
   body String?
   items  Item[]
 

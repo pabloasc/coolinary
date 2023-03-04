@@ -3,7 +3,9 @@ import { json, redirect } from "@remix-run/node";
 import { Form, useCatch, useLoaderData, useActionData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
+import { ShoppingItem } from "~/types/shopping";
 import { getRecipeListByIds } from "~/models/recipe.server";
+import { createShopping } from "~/models/shopping.server";
 import { requireUserId } from "~/session.server";
 export async function action({ request }: ActionArgs) {
   const userId = await requireUserId(request);
@@ -16,21 +18,34 @@ export async function action({ request }: ActionArgs) {
   if (!recipeList) {
     throw new Response("Not Found", { status: 404 });
   }
+
+  //Save shopping list
+  const allItems: ShoppingItem[] = [];
+  recipeList.map((recipe) => {
+    recipe.ingredients.map((ingredient) => {
+      ingredient.recipe = recipe.title;
+      allItems.push(ingredient);
+    });
+  });
+  if (allItems.length) {
+    const shoppingList = await createShopping({
+      title: "",
+      body: "",
+      items: allItems,
+      userId,
+    });
+  } else {
+    throw new Response("Not Found", { status: 404 });
+  }
+
+  return redirect("/");
+
   //return json({ recipeList });
-  return json({ error: { title: null, recipes: recipeList } });
+  //return json({ error: { title: null, recipes: recipeList } });
 }
 
 export default function AddShoppingListPage() {
   const actionData = useActionData<typeof action>();
 
-  return (
-    <>
-      <>
-        Creating shopping list with recipes:{" "}
-        {actionData?.error.recipes.map((recipe) => {
-          return <a>{recipe.title}</a>;
-        })}
-      </>
-    </>
-  );
+  return <p>Creating shopping list</p>;
 }
