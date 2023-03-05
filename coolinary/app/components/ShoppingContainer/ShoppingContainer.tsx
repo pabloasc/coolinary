@@ -30,7 +30,6 @@ export async function actionRequest({ request }: ActionArgs) {
     return redirect("/");
   }
 
-
   if (typeof id !== "string") {
     return json(
       { errors: { title: null, items: "Id must be a string" } },
@@ -59,19 +58,23 @@ export async function actionRequest({ request }: ActionArgs) {
 
   if (typeof items !== "object") {
     return json(
-      { errors: { title: null, items: "Items for the shopping list are required" } },
+      {
+        errors: {
+          title: null,
+          items: "Items for the shopping list are required",
+        },
+      },
       { status: 400 }
     );
   }
 
   const shoppingList =
-    id && id !== ""
-      ? await editShopping({ id, title, body, items });
+    id && id !== "" && (await editShopping({ id, title, body, items }));
 
   return redirect("/");
 }
 
-export function RecipeContainer({ shopping }: Props) {
+export function ShoppingContainer({ shopping }: Props) {
   const actionData = useActionData<typeof action>();
   const titleRef = React.useRef<HTMLInputElement>(null);
   const [title, setTitle] = useState(shopping?.title ? shopping?.title : "");
@@ -126,13 +129,13 @@ export function RecipeContainer({ shopping }: Props) {
       ></input>
 
       <div>
-        <label className="flex w-full flex-col gap-1">
+        <label className="flex w-full flex-col gap-1 font-bold text-gray-600">
           <span>Title: </span>
           <input
             name="title"
-            value={title}
+            value={title ? title : "Your Shopping List"}
             onChange={(event) => setTitle(event?.target.value)}
-            className="input-bordered input input-sm w-full max-w-xs"
+            className="flex-1 border-gray-400 py-2 text-gray-600 placeholder-gray-400 outline-none focus:border-b-2 focus:border-green-400"
             aria-invalid={actionData?.errors?.title ? true : undefined}
             aria-errormessage={
               actionData?.errors?.title ? "title-error" : undefined
@@ -146,31 +149,30 @@ export function RecipeContainer({ shopping }: Props) {
         )}
       </div>
       <div>
-        <SortableList
-          items={items}
-          onChange={setItems}
-          renderItem={(item) => (
-            <SortableList.Item id={item.id}>
-              <input
-                value={item.description}
-                onChange={(event) => {
-                  updateItems(item.id, event.target.value);
-                }}
-                name="item"
-                className="input-bordered input input-xs w-full max-w-xs"
-                aria-invalid={
-                  actionData?.errors?.items ? true : undefined
-                }
-                aria-errormessage={
-                  actionData?.errors?.items
-                    ? "items-error"
-                    : undefined
-                }
-              />
-              <SortableList.DragHandle />
-            </SortableList.Item>
-          )}
-        />
+        <label className="flex w-full flex-col gap-1 font-bold text-gray-600">
+          <span>Items: </span>
+          <SortableList
+            items={items}
+            onChange={setItems}
+            renderItem={(item) => (
+              <SortableList.Item id={item.id}>
+                <input
+                  value={item.description}
+                  onChange={(event) => {
+                    updateItems(item.id, event.target.value);
+                  }}
+                  name="item"
+                  className="flex-1 border-gray-400 py-2 text-gray-600 placeholder-gray-400 outline-none focus:border-b-2 focus:border-green-400"
+                  aria-invalid={actionData?.errors?.items ? true : undefined}
+                  aria-errormessage={
+                    actionData?.errors?.items ? "items-error" : undefined
+                  }
+                />
+                <SortableList.DragHandle />
+              </SortableList.Item>
+            )}
+          />
+        </label>
 
         <a onClick={addMoreItems}>Add more...</a>
 
@@ -180,20 +182,16 @@ export function RecipeContainer({ shopping }: Props) {
           </div>
         )}
 
-        <input
-          type="hidden"
-          name="items"
-          value={JSON.stringify(items)}
-        ></input>
+        <input type="hidden" name="items" value={JSON.stringify(items)}></input>
 
-        <label className="flex w-full flex-col gap-1">
-          <span>Preparation (Optional): </span>
+        <label className="flex w-full flex-col gap-1 font-bold text-gray-600">
+          <span>Other: </span>
           <textarea
             name="body"
             value={body}
             onChange={(event) => setBody(event?.target.value)}
-            rows={8}
-            className="textarea-bordered textarea textarea-xs w-full max-w-xs"
+            rows={2}
+            className="flex-1 border-gray-400 py-2 text-gray-600 placeholder-gray-400 outline-none focus:border-b-2 focus:border-green-400"
           />
         </label>
       </div>

@@ -3,7 +3,7 @@ import { json, redirect } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
 import { SortableList } from "~/components";
 import React, { useState } from "react";
-import { Recipe } from "~/types";
+import { Recipe, Ingredient } from "~/types";
 import invariant from "tiny-invariant";
 
 import { deleteRecipe, createRecipe, editRecipe } from "~/models/recipe.server";
@@ -20,7 +20,7 @@ export async function actionRequest({ request }: ActionArgs) {
   const title = formData.get("title");
   const ingredientsList = formData.get("ingredients");
   const submit = formData.get("submit");
-  const ingredients = JSON.parse(ingredientsList as string);
+  const ingredients = JSON.parse(ingredientsList as string) as Ingredient[];
   const body = formData.get("body");
 
   if (submit === "delete") {
@@ -49,17 +49,26 @@ export async function actionRequest({ request }: ActionArgs) {
     );
   }
 
-  if (typeof ingredients !== "object") {
+  var properArray: Ingredient[] = [];
+  if (ingredients.length === 0) {
     return json(
       { errors: { title: null, ingredients: "Ingredients are required" } },
       { status: 400 }
     );
+  } else {
+    // remove ingredients with empty description and restore indexing
+    var properIndex = 1;
+    ingredients.forEach((i: Ingredient) => {
+      if (i.description.trim() !== "") {
+        properArray.push({ id: properIndex++, description: i.description });
+      }
+    });
   }
 
   const recipe =
     id && id !== ""
-      ? await editRecipe({ id, title, body, ingredients })
-      : await createRecipe({ title, body, ingredients, userId });
+      ? await editRecipe({ id, title, body, ingredients: properArray })
+      : await createRecipe({ title, body, ingredients: properArray, userId });
 
   return redirect("/");
 }
@@ -102,6 +111,8 @@ export function RecipeContainer({ recipe }: Props) {
     }
   }, [actionData]);
 
+  var SortKey = 1;
+
   return (
     <Form
       method="post"
@@ -119,13 +130,13 @@ export function RecipeContainer({ recipe }: Props) {
       ></input>
 
       <div>
-        <label className="flex w-full flex-col gap-1">
+        <label className="flex w-full flex-col gap-1 font-bold text-gray-600">
           <span>Title: </span>
           <input
             name="title"
             value={title}
             onChange={(event) => setTitle(event?.target.value)}
-            className="input-bordered input input-sm w-full max-w-xs"
+            className="flex-1 border-b-2 border-gray-400 py-2 text-gray-600 placeholder-gray-400 outline-none focus:border-green-400"
             aria-invalid={actionData?.errors?.title ? true : undefined}
             aria-errormessage={
               actionData?.errors?.title ? "title-error" : undefined
@@ -139,31 +150,34 @@ export function RecipeContainer({ recipe }: Props) {
         )}
       </div>
       <div>
-        <SortableList
-          items={items}
-          onChange={setItems}
-          renderItem={(ingredient) => (
-            <SortableList.Item id={ingredient.id}>
-              <input
-                value={ingredient.description}
-                onChange={(event) => {
-                  updateIngredients(ingredient.id, event.target.value);
-                }}
-                name="ingredient"
-                className="input-bordered input input-xs w-full max-w-xs"
-                aria-invalid={
-                  actionData?.errors?.ingredients ? true : undefined
-                }
-                aria-errormessage={
-                  actionData?.errors?.ingredients
-                    ? "ingredients-error"
-                    : undefined
-                }
-              />
-              <SortableList.DragHandle />
-            </SortableList.Item>
-          )}
-        />
+        <label className="flex w-full flex-col gap-1 font-bold text-gray-600">
+          <span>Ingredients: </span>
+          <SortableList
+            items={items}
+            onChange={setItems}
+            renderItem={(ingredient) => (
+              <SortableList.Item id={ingredient.id}>
+                <input
+                  value={ingredient.description}
+                  onChange={(event) => {
+                    updateIngredients(ingredient.id, event.target.value);
+                  }}
+                  name="ingredient"
+                  className="flex-1 border-b-2 border-gray-400 py-2 text-gray-600 placeholder-gray-400 outline-none focus:border-green-400"
+                  aria-invalid={
+                    actionData?.errors?.ingredients ? true : undefined
+                  }
+                  aria-errormessage={
+                    actionData?.errors?.ingredients
+                      ? "ingredients-error"
+                      : undefined
+                  }
+                />
+                <SortableList.DragHandle />
+              </SortableList.Item>
+            )}
+          />
+        </label>
 
         <a onClick={addMoreIngredients}>Add more...</a>
 
@@ -179,14 +193,14 @@ export function RecipeContainer({ recipe }: Props) {
           value={JSON.stringify(items)}
         ></input>
 
-        <label className="flex w-full flex-col gap-1">
+        <label className="flex w-full flex-col gap-1 font-bold text-gray-600">
           <span>Preparation (Optional): </span>
           <textarea
             name="body"
             value={body}
             onChange={(event) => setBody(event?.target.value)}
-            rows={8}
-            className="textarea-bordered textarea textarea-xs w-full max-w-xs"
+            rows={2}
+            className="flex-1 border-b-2 border-gray-400 py-2 text-gray-600 placeholder-gray-400 outline-none focus:border-green-400"
           />
         </label>
       </div>

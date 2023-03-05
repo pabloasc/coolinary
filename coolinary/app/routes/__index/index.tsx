@@ -3,18 +3,23 @@ import { Link, Form, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import { useOptionalUser } from "~/utils";
 import { getUserId } from "~/session.server";
+import { ShoppingContainer } from "~/components/ShoppingContainer";
 import { useState } from "react";
+import { getLatestShopping } from "~/models/shopping.server";
 import { getRecipeListItems } from "~/models/recipe.server";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
   const recipeListItems = await getRecipeListItems({ userId });
-  return json({ recipeListItems });
+  const latestShopping = await getLatestShopping({ userId });
+  return json({ recipeListItems, latestShopping });
 }
 
 export default function Index() {
   const user = useOptionalUser();
-  const data = user ? useLoaderData<typeof loader>() : { recipeListItems: [] };
+  const data = user
+    ? useLoaderData<typeof loader>()
+    : { recipeListItems: [], latestShopping: [] };
   const [userinfo, setUserInfo] = useState({ selectedRecipes: [] });
 
   const handleChange = (e) => {
@@ -40,7 +45,7 @@ export default function Index() {
 
   return (
     <>
-      <div className="w-full">
+      <div className="w-11/12">
         <Form method="post" action="shopping/new">
           <div className="container mx-auto mt-4">
             {data?.recipeListItems?.length === 0 ? (
@@ -127,6 +132,10 @@ export default function Index() {
             </button>
           </div>
         </Form>
+
+        <div className="container mx-auto mt-4">
+          <ShoppingContainer shopping={data.latestShopping}></ShoppingContainer>
+        </div>
       </div>
 
       <div className="h-200 w-full border-r bg-gray-50">

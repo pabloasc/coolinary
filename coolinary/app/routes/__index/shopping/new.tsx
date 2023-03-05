@@ -18,11 +18,13 @@ export async function action({ request }: ActionArgs) {
   if (!recipeList) {
     throw new Response("Not Found", { status: 404 });
   }
+  let itemId = 1;
 
   //Save shopping list
   const allItems: ShoppingItem[] = [];
   recipeList.map((recipe) => {
     recipe.ingredients.map((ingredient) => {
+      ingredient.id = itemId++;
       ingredient.recipe = recipe.title;
       allItems.push(ingredient);
     });
