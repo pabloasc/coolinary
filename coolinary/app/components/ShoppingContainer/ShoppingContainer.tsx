@@ -4,6 +4,13 @@ import { Form, useActionData } from "@remix-run/react";
 import { SortableList } from "~/components";
 import React, { useState } from "react";
 import { Shopping } from "~/types";
+import {
+  INPUT_STYLE,
+  SORTABLE_ITEM_STYLE,
+  LABEL_STYLE,
+  TEXTAREA_STYLE,
+  BUTTON_STYLE,
+} from "~/styles/tailwind";
 import invariant from "tiny-invariant";
 
 import { deleteShopping, editShopping } from "~/models/shopping.server";
@@ -113,44 +120,32 @@ export function ShoppingContainer({ shopping }: Props) {
   }, [actionData]);
 
   return (
-    <Form
-      method="post"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-        width: "100%",
-      }}
-    >
-      <input
-        type="hidden"
-        name="id"
-        value={shopping?.id ? shopping?.id : ""}
-      ></input>
+    <div className="">
+      <Form method="post">
+        <input
+          type="hidden"
+          name="id"
+          value={shopping?.id ? shopping?.id : ""}
+        ></input>
 
-      <div>
-        <label className="flex w-full flex-col gap-1 font-bold text-gray-600">
-          <span>Title: </span>
+        <div>
           <input
             name="title"
             value={title ? title : "Your Shopping List"}
             onChange={(event) => setTitle(event?.target.value)}
-            className="flex-1 border-gray-400 py-2 text-gray-600 placeholder-gray-400 outline-none focus:border-b-2 focus:border-green-400"
+            className={`${INPUT_STYLE} border-transparent bg-transparent font-extrabold ring-transparent`}
             aria-invalid={actionData?.errors?.title ? true : undefined}
             aria-errormessage={
               actionData?.errors?.title ? "title-error" : undefined
             }
           />
-        </label>
-        {actionData?.errors?.title && (
-          <div className="pt-1 text-red-700" id="title-error">
-            {actionData.errors.title}
-          </div>
-        )}
-      </div>
-      <div>
-        <label className="flex w-full flex-col gap-1 font-bold text-gray-600">
-          <span>Items: </span>
+          {actionData?.errors?.title && (
+            <div className="pt-1 text-red-700" id="title-error">
+              {actionData.errors.title}
+            </div>
+          )}
+        </div>
+        <div>
           <SortableList
             items={items}
             onChange={setItems}
@@ -162,7 +157,7 @@ export function ShoppingContainer({ shopping }: Props) {
                     updateItems(item.id, event.target.value);
                   }}
                   name="item"
-                  className="flex-1 border-gray-400 py-2 text-gray-600 placeholder-gray-400 outline-none focus:border-b-2 focus:border-green-400"
+                  className={`${SORTABLE_ITEM_STYLE} border-transparent bg-transparent font-serif ring-transparent`}
                   aria-invalid={actionData?.errors?.items ? true : undefined}
                   aria-errormessage={
                     actionData?.errors?.items ? "items-error" : undefined
@@ -172,49 +167,55 @@ export function ShoppingContainer({ shopping }: Props) {
               </SortableList.Item>
             )}
           />
-        </label>
 
-        <a onClick={addMoreItems}>Add more...</a>
-
-        {actionData?.errors?.items && (
-          <div className="pt-1 text-red-700" id="body-error">
-            {actionData.errors.items}
+          <div className="mb-4 pt-1 text-blue-700">
+            <a onClick={addMoreItems}>Add more...</a>
           </div>
-        )}
 
-        <input type="hidden" name="items" value={JSON.stringify(items)}></input>
+          {actionData?.errors?.items && (
+            <div className="pt-1 text-red-700" id="body-error">
+              {actionData.errors.items}
+            </div>
+          )}
 
-        <label className="flex w-full flex-col gap-1 font-bold text-gray-600">
-          <span>Other: </span>
-          <textarea
-            name="body"
-            value={body}
-            onChange={(event) => setBody(event?.target.value)}
-            rows={2}
-            className="flex-1 border-gray-400 py-2 text-gray-600 placeholder-gray-400 outline-none focus:border-b-2 focus:border-green-400"
-          />
-        </label>
-      </div>
+          <input
+            type="hidden"
+            name="items"
+            value={JSON.stringify(items)}
+          ></input>
 
-      <div className="text-right">
-        <button
-          name="submit"
-          type="submit"
-          value="delete"
-          className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-        >
-          Delete
-        </button>
+          <label className={LABEL_STYLE}>
+            <span>Notes: </span>
+            <textarea
+              name="body"
+              value={body}
+              onChange={(event) => setBody(event?.target.value)}
+              rows={2}
+              className={`${TEXTAREA_STYLE} border-transparent bg-transparent ring-transparent`}
+            />
+          </label>
+        </div>
 
-        <button
-          name="submit"
-          type="submit"
-          value="add"
-          className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-        >
-          Save
-        </button>
-      </div>
-    </Form>
+        <div className="text-right">
+          <button
+            name="submit"
+            type="submit"
+            value="delete"
+            className={BUTTON_STYLE}
+          >
+            Delete
+          </button>
+
+          <button
+            name="submit"
+            type="submit"
+            value="add"
+            className={BUTTON_STYLE}
+          >
+            Save
+          </button>
+        </div>
+      </Form>
+    </div>
   );
 }

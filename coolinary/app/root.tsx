@@ -34,7 +34,11 @@ export async function loader({ request }: LoaderArgs) {
 
 export default function App() {
   return (
-    <html data-theme="light" lang="en">
+    <html
+      data-theme="myLight"
+      lang="en"
+      className="align-center m-auto w-11/12"
+    >
       <head>
         <Meta />
         <Links />

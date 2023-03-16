@@ -45,7 +45,7 @@ export default function Index() {
 
   return (
     <>
-      <div className="w-11/12">
+      <div className="grid grid-cols-1">
         <Form method="post" action="shopping/new">
           <div className="container mx-auto mt-4">
             {data?.recipeListItems?.length === 0 ? (
@@ -53,7 +53,7 @@ export default function Index() {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {data?.recipeListItems?.map((recipe) => (
-                  <div className="card m-2 transform cursor-pointer rounded-lg border border-gray-400 transition-all duration-200 hover:-translate-y-1 hover:border-opacity-0 hover:shadow-md">
+                  <div className="card m-2 transform cursor-pointer rounded-lg border border-gray-400 bg-white transition-all duration-200 hover:-translate-y-1 hover:border-opacity-0 hover:shadow-md">
                     <div className="card-body">
                       <div className="form-control">
                         <label className="label cursor-pointer">
@@ -80,7 +80,7 @@ export default function Index() {
                         (ingredient: { id: number; description?: string }) => {
                           return (
                             ingredient?.description !== "" && (
-                              <p className="font-mono text-sm font-light text-gray-700">
+                              <p className="font-serif text-sm font-light text-gray-700">
                                 {ingredient?.description}
                               </p>
                             )
@@ -111,34 +111,27 @@ export default function Index() {
                 ))}
               </div>
             )}
-            <Link
-              to="/recipe/new"
-              className="float-left block p-4 text-xl text-blue-500"
-            >
+            <Link to="/recipe/new" className="p-4 text-xl text-blue-500">
               + Add recipes
             </Link>
-
-            <Link
-              to="/shopping/new"
-              className="block p-4 text-xl text-blue-500"
-            ></Link>
+          </div>
+          <div className="container mx-auto my-12 grid grid-cols-1">
             <button
               name="submit"
               type="submit"
               value="shopping"
-              className="float-right rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+              className="rounded bg-neutral-400 py-2 px-4 text-white hover:bg-neutral-600 focus:bg-neutral-400"
             >
               Create grocery shopping list
             </button>
           </div>
         </Form>
-
         <div className="container mx-auto mt-4">
           <ShoppingContainer shopping={data.latestShopping}></ShoppingContainer>
         </div>
       </div>
 
-      <div className="h-200 w-full border-r bg-gray-50">
+      <div className="container mx-auto mt-4">
         <Outlet />
       </div>
     </>

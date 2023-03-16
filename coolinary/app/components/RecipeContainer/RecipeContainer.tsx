@@ -4,6 +4,13 @@ import { Form, useActionData } from "@remix-run/react";
 import { SortableList } from "~/components";
 import React, { useState } from "react";
 import { Recipe, Ingredient } from "~/types";
+import {
+  INPUT_STYLE,
+  SORTABLE_ITEM_STYLE,
+  LABEL_STYLE,
+  TEXTAREA_STYLE,
+  BUTTON_STYLE,
+} from "~/styles/tailwind";
 import invariant from "tiny-invariant";
 
 import { deleteRecipe, createRecipe, editRecipe } from "~/models/recipe.server";
@@ -130,13 +137,13 @@ export function RecipeContainer({ recipe }: Props) {
       ></input>
 
       <div>
-        <label className="flex w-full flex-col gap-1 font-bold text-gray-600">
+        <label className={LABEL_STYLE}>
           <span>Title: </span>
           <input
             name="title"
             value={title}
             onChange={(event) => setTitle(event?.target.value)}
-            className="flex-1 border-b-2 border-gray-400 py-2 text-gray-600 placeholder-gray-400 outline-none focus:border-green-400"
+            className={INPUT_STYLE}
             aria-invalid={actionData?.errors?.title ? true : undefined}
             aria-errormessage={
               actionData?.errors?.title ? "title-error" : undefined
@@ -150,7 +157,7 @@ export function RecipeContainer({ recipe }: Props) {
         )}
       </div>
       <div>
-        <label className="flex w-full flex-col gap-1 font-bold text-gray-600">
+        <label className={LABEL_STYLE}>
           <span>Ingredients: </span>
           <SortableList
             items={items}
@@ -163,7 +170,7 @@ export function RecipeContainer({ recipe }: Props) {
                     updateIngredients(ingredient.id, event.target.value);
                   }}
                   name="ingredient"
-                  className="flex-1 border-b-2 border-gray-400 py-2 text-gray-600 placeholder-gray-400 outline-none focus:border-green-400"
+                  className={SORTABLE_ITEM_STYLE}
                   aria-invalid={
                     actionData?.errors?.ingredients ? true : undefined
                   }
@@ -179,7 +186,9 @@ export function RecipeContainer({ recipe }: Props) {
           />
         </label>
 
-        <a onClick={addMoreIngredients}>Add more...</a>
+        <div className="mb-4 pt-1 text-blue-700">
+          <a onClick={addMoreIngredients}>Add more...</a>
+        </div>
 
         {actionData?.errors?.ingredients && (
           <div className="pt-1 text-red-700" id="body-error">
@@ -193,33 +202,35 @@ export function RecipeContainer({ recipe }: Props) {
           value={JSON.stringify(items)}
         ></input>
 
-        <label className="flex w-full flex-col gap-1 font-bold text-gray-600">
+        <label className={LABEL_STYLE}>
           <span>Preparation (Optional): </span>
           <textarea
             name="body"
             value={body}
             onChange={(event) => setBody(event?.target.value)}
             rows={2}
-            className="flex-1 border-b-2 border-gray-400 py-2 text-gray-600 placeholder-gray-400 outline-none focus:border-green-400"
+            className={TEXTAREA_STYLE}
           />
         </label>
       </div>
 
       <div className="text-right">
-        <button
-          name="submit"
-          type="submit"
-          value="delete"
-          className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-        >
-          Delete
-        </button>
+        {recipe && (
+          <button
+            name="submit"
+            type="submit"
+            value="delete"
+            className={BUTTON_STYLE}
+          >
+            Delete
+          </button>
+        )}
 
         <button
           name="submit"
           type="submit"
           value="add"
-          className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+          className={BUTTON_STYLE}
         >
           Save
         </button>
