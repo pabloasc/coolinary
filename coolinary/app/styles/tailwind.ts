@@ -7,3 +7,4 @@ export const TEXTAREA_STYLE =
   "mt-1 block w-full my-2 rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:py-1.5 sm:text-sm sm:leading-6";
 export const BUTTON_STYLE =
   "ml-5 rounded-md border my-4 border-gray-300 bg-white py-1.5 px-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-50";
+export const TRANSPARENT = "border-transparent bg-transparent ring-transparent";

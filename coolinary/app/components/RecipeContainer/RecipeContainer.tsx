@@ -186,7 +186,7 @@ export function RecipeContainer({ recipe }: Props) {
           />
         </label>
 
-        <div className="mb-4 pt-1 text-blue-700">
+        <div className="mb-4 cursor-pointer pt-1 text-blue-700">
           <a onClick={addMoreIngredients}>Add more...</a>
         </div>
 

@@ -10,6 +10,7 @@ import {
   LABEL_STYLE,
   TEXTAREA_STYLE,
   BUTTON_STYLE,
+  TRANSPARENT,
 } from "~/styles/tailwind";
 import invariant from "tiny-invariant";
 
@@ -120,102 +121,104 @@ export function ShoppingContainer({ shopping }: Props) {
   }, [actionData]);
 
   return (
-    <div className="">
-      <Form method="post">
-        <input
-          type="hidden"
-          name="id"
-          value={shopping?.id ? shopping?.id : ""}
-        ></input>
-
-        <div>
-          <input
-            name="title"
-            value={title ? title : "Your Shopping List"}
-            onChange={(event) => setTitle(event?.target.value)}
-            className={`${INPUT_STYLE} border-transparent bg-transparent font-extrabold ring-transparent`}
-            aria-invalid={actionData?.errors?.title ? true : undefined}
-            aria-errormessage={
-              actionData?.errors?.title ? "title-error" : undefined
-            }
-          />
-          {actionData?.errors?.title && (
-            <div className="pt-1 text-red-700" id="title-error">
-              {actionData.errors.title}
-            </div>
-          )}
-        </div>
-        <div>
-          <SortableList
-            items={items}
-            onChange={setItems}
-            renderItem={(item) => (
-              <SortableList.Item id={item.id}>
-                <input
-                  value={item.description}
-                  onChange={(event) => {
-                    updateItems(item.id, event.target.value);
-                  }}
-                  name="item"
-                  className={`${SORTABLE_ITEM_STYLE} border-transparent bg-transparent font-serif ring-transparent`}
-                  aria-invalid={actionData?.errors?.items ? true : undefined}
-                  aria-errormessage={
-                    actionData?.errors?.items ? "items-error" : undefined
-                  }
-                />
-                <SortableList.DragHandle />
-              </SortableList.Item>
-            )}
-          />
-
-          <div className="mb-4 pt-1 text-blue-700">
-            <a onClick={addMoreItems}>Add more...</a>
-          </div>
-
-          {actionData?.errors?.items && (
-            <div className="pt-1 text-red-700" id="body-error">
-              {actionData.errors.items}
-            </div>
-          )}
-
+    <div className="card rounded-lg border border-gray-400 bg-white">
+      <div className="card-body">
+        <Form method="post" action={`/shopping/edit/${shopping?.id}`}>
           <input
             type="hidden"
-            name="items"
-            value={JSON.stringify(items)}
+            name="id"
+            value={shopping?.id ? shopping?.id : ""}
           ></input>
 
-          <label className={LABEL_STYLE}>
-            <span>Notes: </span>
-            <textarea
-              name="body"
-              value={body}
-              onChange={(event) => setBody(event?.target.value)}
-              rows={2}
-              className={`${TEXTAREA_STYLE} border-transparent bg-transparent ring-transparent`}
+          <div>
+            <input
+              name="title"
+              value={title ? title : "Your Shopping List"}
+              onChange={(event) => setTitle(event?.target.value)}
+              className={`${INPUT_STYLE} ${TRANSPARENT} card-title text-xl font-extrabold`}
+              aria-invalid={actionData?.errors?.title ? true : undefined}
+              aria-errormessage={
+                actionData?.errors?.title ? "title-error" : undefined
+              }
             />
-          </label>
-        </div>
+            {actionData?.errors?.title && (
+              <div className="pt-1 text-red-700" id="title-error">
+                {actionData.errors.title}
+              </div>
+            )}
+          </div>
+          <div>
+            <SortableList
+              items={items}
+              onChange={setItems}
+              renderItem={(item) => (
+                <SortableList.Item id={item.id}>
+                  <input
+                    value={item.description}
+                    onChange={(event) => {
+                      updateItems(item.id, event.target.value);
+                    }}
+                    name="item"
+                    className={`${SORTABLE_ITEM_STYLE} ${TRANSPARENT}`}
+                    aria-invalid={actionData?.errors?.items ? true : undefined}
+                    aria-errormessage={
+                      actionData?.errors?.items ? "items-error" : undefined
+                    }
+                  />
+                  <SortableList.DragHandle />
+                </SortableList.Item>
+              )}
+            />
 
-        <div className="text-right">
-          <button
-            name="submit"
-            type="submit"
-            value="delete"
-            className={BUTTON_STYLE}
-          >
-            Delete
-          </button>
+            <div className="mb-4 cursor-pointer pt-1 text-blue-700">
+              <a onClick={addMoreItems}>Add more...</a>
+            </div>
 
-          <button
-            name="submit"
-            type="submit"
-            value="add"
-            className={BUTTON_STYLE}
-          >
-            Save
-          </button>
-        </div>
-      </Form>
+            {actionData?.errors?.items && (
+              <div className="pt-1 text-red-700" id="body-error">
+                {actionData.errors.items}
+              </div>
+            )}
+
+            <input
+              type="hidden"
+              name="items"
+              value={JSON.stringify(items)}
+            ></input>
+
+            <label className={LABEL_STYLE}>
+              <span>Notes: </span>
+              <textarea
+                name="body"
+                value={body}
+                onChange={(event) => setBody(event?.target.value)}
+                rows={2}
+                className={`${TEXTAREA_STYLE} ${TRANSPARENT}`}
+              />
+            </label>
+          </div>
+
+          <div className="text-right">
+            <button
+              name="submit"
+              type="submit"
+              value="delete"
+              className={BUTTON_STYLE}
+            >
+              Delete
+            </button>
+
+            <button
+              name="submit"
+              type="submit"
+              value="add"
+              className={BUTTON_STYLE}
+            >
+              Save
+            </button>
+          </div>
+        </Form>
+      </div>
     </div>
   );
 }

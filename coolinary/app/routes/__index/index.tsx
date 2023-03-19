@@ -19,7 +19,7 @@ export default function Index() {
   const user = useOptionalUser();
   const data = user
     ? useLoaderData<typeof loader>()
-    : { recipeListItems: [], latestShopping: [] };
+    : { recipeListItems: [], latestShopping: null };
   const [userinfo, setUserInfo] = useState({ selectedRecipes: [] });
 
   const handleChange = (e) => {
@@ -57,7 +57,7 @@ export default function Index() {
                     <div className="card-body">
                       <div className="form-control">
                         <label className="label cursor-pointer">
-                          <span className="card-title text-xl font-extrabold">
+                          <span className="card-title font-bold">
                             {recipe.title}
                           </span>
                           <input
@@ -115,20 +115,26 @@ export default function Index() {
               + Add recipes
             </Link>
           </div>
-          <div className="container mx-auto my-12 grid grid-cols-1">
-            <button
-              name="submit"
-              type="submit"
-              value="shopping"
-              className="rounded bg-neutral-400 py-2 px-4 text-white hover:bg-neutral-600 focus:bg-neutral-400"
-            >
-              Create grocery shopping list
-            </button>
-          </div>
+          {userinfo.selectedRecipes && userinfo.selectedRecipes.length > 0 && (
+            <div className="container mx-auto my-12 grid grid-cols-1">
+              <button
+                name="submit"
+                type="submit"
+                value="shopping"
+                className="rounded bg-neutral-400 py-2 px-4 text-white hover:bg-neutral-600 focus:bg-neutral-400"
+              >
+                Create grocery list
+              </button>
+            </div>
+          )}
         </Form>
-        <div className="container mx-auto mt-4">
-          <ShoppingContainer shopping={data.latestShopping}></ShoppingContainer>
-        </div>
+        {data.latestShopping !== null && (
+          <div className="container mx-auto mt-4">
+            <ShoppingContainer
+              shopping={data.latestShopping}
+            ></ShoppingContainer>
+          </div>
+        )}
       </div>
 
       <div className="container mx-auto mt-4">
