@@ -7,8 +7,6 @@ import type {
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import "./SortableItem.css";
-
 interface Props {
   id: UniqueIdentifier;
 }
@@ -25,7 +23,11 @@ const SortableItemContext = createContext<Context>({
   ref() {},
 });
 
-export function SortableItem({ children, id }: PropsWithChildren<Props>) {
+export function SortableItem({
+  children,
+  id,
+  recipe,
+}: PropsWithChildren<Props>) {
   const {
     attributes,
     isDragging,
@@ -51,8 +53,13 @@ export function SortableItem({ children, id }: PropsWithChildren<Props>) {
 
   return (
     <SortableItemContext.Provider value={context}>
-      <li className="SortableItem" ref={setNodeRef} style={style}>
-        {children}
+      <li className="SortableItemContainer" ref={setNodeRef} style={style}>
+        <div className="SortableItem">{children}</div>
+        {recipe && (
+          <div className="container">
+            <span className="kbd kbd-xs">{recipe}</span>
+          </div>
+        )}
       </li>
     </SortableItemContext.Provider>
   );
@@ -66,11 +73,11 @@ export function DragHandle() {
       <svg
         fill="none"
         stroke="currentColor"
-        stroke-width="1.5"
+        stroke-width="2"
         viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
-        width="20"
+        width="35"
       >
         <path
           stroke-linecap="round"

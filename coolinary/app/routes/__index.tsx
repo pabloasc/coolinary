@@ -5,10 +5,12 @@ export default function Index() {
   const user = useOptionalUser();
   return (
     <>
-      <header className="m-2 mt-8 grid w-full grid-cols-6 ">
+      <header className="m-2 mt-8 grid w-full grid-cols-6">
         <div className="col-span-6 ml-4 min-[420px]:col-span-3">
           <h1 className="text-3xl font-bold">
-            <Link to="/">coolinary</Link>
+            <Link to="/">
+              <img src="./images/coolinary.png" width="200"></img>
+            </Link>
           </h1>
         </div>
         <div className="col-span-6 mr-4 justify-self-end min-[420px]:col-span-3">

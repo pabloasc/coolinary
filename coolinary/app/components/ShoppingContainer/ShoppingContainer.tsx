@@ -91,13 +91,13 @@ export function ShoppingContainer({ shopping }: Props) {
     shopping?.items
       ? shopping?.items
       : [
-          { id: 1, description: "" },
-          { id: 2, description: "" },
-          { id: 3, description: "" },
+          { id: 1, description: "", recipe: "" },
+          { id: 2, description: "", recipe: "" },
+          { id: 3, description: "", recipe: "" },
         ]
   );
   const addMoreItems = () => {
-    setItems([...items, { id: items.length + 1, description: "" }]);
+    setItems([...items, { id: items.length + 1, description: "", recipe: "" }]);
   };
   const updateItems = (newId: number, newDescription: string) =>
     setItems(
@@ -152,19 +152,32 @@ export function ShoppingContainer({ shopping }: Props) {
               items={items}
               onChange={setItems}
               renderItem={(item) => (
-                <SortableList.Item id={item.id}>
-                  <input
-                    value={item.description}
-                    onChange={(event) => {
-                      updateItems(item.id, event.target.value);
-                    }}
-                    name="item"
-                    className={`${SORTABLE_ITEM_STYLE} ${TRANSPARENT}`}
-                    aria-invalid={actionData?.errors?.items ? true : undefined}
-                    aria-errormessage={
-                      actionData?.errors?.items ? "items-error" : undefined
-                    }
-                  />
+                <SortableList.Item id={item.id} recipe={item.recipe}>
+                  <>
+                    <div>
+                      <input
+                        type="checkbox"
+                        name="bougthItem"
+                        value={item.id}
+                        className="checkbox-info checkbox"
+                      />
+                      <input
+                        id={item.id.toString()}
+                        value={item.description}
+                        onChange={(event) => {
+                          updateItems(item.id, event.target.value);
+                        }}
+                        name="item"
+                        className={`${SORTABLE_ITEM_STYLE} ${TRANSPARENT} mx-2 py-0`}
+                        aria-invalid={
+                          actionData?.errors?.items ? true : undefined
+                        }
+                        aria-errormessage={
+                          actionData?.errors?.items ? "items-error" : undefined
+                        }
+                      />
+                    </div>
+                  </>
                   <SortableList.DragHandle />
                 </SortableList.Item>
               )}

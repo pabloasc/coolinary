@@ -10,6 +10,7 @@ import {
   LABEL_STYLE,
   TEXTAREA_STYLE,
   BUTTON_STYLE,
+  TRANSPARENT,
 } from "~/styles/tailwind";
 import invariant from "tiny-invariant";
 
@@ -170,7 +171,7 @@ export function RecipeContainer({ recipe }: Props) {
                     updateIngredients(ingredient.id, event.target.value);
                   }}
                   name="ingredient"
-                  className={SORTABLE_ITEM_STYLE}
+                  className={`${SORTABLE_ITEM_STYLE} ${TRANSPARENT}`}
                   aria-invalid={
                     actionData?.errors?.ingredients ? true : undefined
                   }
