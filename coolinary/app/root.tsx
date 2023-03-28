@@ -14,7 +14,6 @@ import baseStylesheetUrl from "./styles/base.css";
 import sortableListStylesheetUrl from "./styles/SortableList.css";
 
 import { getUser } from "./session.server";
-import { SortableList } from "~/components";
 
 export const links: LinksFunction = () => {
   return [
@@ -38,11 +37,7 @@ export async function loader({ request }: LoaderArgs) {
 
 export default function App() {
   return (
-    <html
-      data-theme="myLight"
-      lang="en"
-      className="align-center m-auto w-11/12"
-    >
+    <html data-theme="myLight" lang="en">
       <head>
         <Meta />
         <Links />

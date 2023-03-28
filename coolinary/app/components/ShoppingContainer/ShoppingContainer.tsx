@@ -33,7 +33,7 @@ export async function actionRequest({ request }: ActionArgs) {
 
   if (submit === "delete") {
     if (typeof id === "string") {
-      await deleteShopping({ userId, id: id });
+      await deleteShopping({ userId, id });
     }
     return redirect("/");
   }

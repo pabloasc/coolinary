@@ -21,49 +21,66 @@ export default function Index() {
     ? useLoaderData<typeof loader>()
     : { recipeListItems: [], latestShopping: null };
   const [userinfo, setUserInfo] = useState({ selectedRecipes: [] });
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   const handleChange = (e) => {
     // Destructuring
     const { value, checked } = e.target;
     const { selectedRecipes } = userinfo;
 
-    console.log(`${value} is ${checked}`);
-
-    // Case 1 : The user checks the box
     if (checked) {
       setUserInfo({
         selectedRecipes: [...selectedRecipes, value],
       });
-    }
-    // Case 2  : The user unchecks the box
-    else {
+    } else {
       setUserInfo({
         selectedRecipes: selectedRecipes.filter((e) => e !== value),
       });
     }
   };
-
   return (
     <>
-      <div className="container mx-auto flex justify-end">
-        <div className="w-64">
-          <label className="label cursor-pointer">
-            <span className="card-title">Collapse Ingredients</span>
-            <input
-              type="checkbox"
-              name="collapseIngredients"
-              value={collapsed}
-              className="checkbox-info checkbox"
-              onChange={() => setCollapsed(!collapsed)}
-            />
-          </label>
+      {!user && (
+        <div className="grid grid-cols-2 items-center justify-center ">
+          <span>
+            <h1 className="font-title mb-6 font-serif text-4xl font-extrabold sm:text-5xl lg:text-6xl">
+              Turn your familiar recipes into grocery lists
+            </h1>
+            <h2 className="font-title mb-16 font-serif text-xl">
+              Add your recipes and create yout lists with no effort
+            </h2>
+          </span>
+          <img src="/images/shopping_illustration.png"></img>
         </div>
-      </div>
+      )}
+      {data?.recipeListItems?.length > 0 && (
+        <>
+          <div className="container mx-auto flex justify-end">
+            <div className="w-64">
+              <label className="label cursor-pointer">
+                <span className="card-title">
+                  {!collapsed ? (
+                    <>Collapse Ingredients</>
+                  ) : (
+                    <>Show Ingredients</>
+                  )}
+                </span>
+                <input
+                  type="checkbox"
+                  name="collapseIngredients"
+                  value={collapsed}
+                  className="checkbox-info checkbox"
+                  onChange={() => setCollapsed(!collapsed)}
+                />
+              </label>
+            </div>
+          </div>
+        </>
+      )}
       <Form method="post" action="shopping/new">
         <div className="container mx-auto mt-4">
           {data?.recipeListItems?.length === 0 ? (
-            <p className="p-4">No recipes yet</p>
+            <p className="card-title p-4">No recipes yet</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {data?.recipeListItems?.map((recipe) => (
@@ -125,7 +142,7 @@ export default function Index() {
             </div>
           )}
           <Link to="/recipe/new" className="p-4 text-xl text-blue-500">
-            + Add recipes
+            + Add your own recipes
           </Link>
         </div>
         {userinfo.selectedRecipes && userinfo.selectedRecipes.length > 0 && (
@@ -141,8 +158,9 @@ export default function Index() {
           </div>
         )}
       </Form>
+
       {data.latestShopping !== null && (
-        <div className="container mx-auto mt-4">
+        <div key={data.latestShopping.id} className="container mx-auto mt-16">
           <ShoppingContainer shopping={data.latestShopping}></ShoppingContainer>
         </div>
       )}

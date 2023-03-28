@@ -12,7 +12,6 @@ import {
   BUTTON_STYLE,
   TRANSPARENT,
 } from "~/styles/tailwind";
-import invariant from "tiny-invariant";
 
 import { deleteRecipe, createRecipe, editRecipe } from "~/models/recipe.server";
 import { requireUserId } from "~/session.server";
