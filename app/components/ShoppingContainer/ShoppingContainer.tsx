@@ -12,7 +12,6 @@ import {
   BUTTON_STYLE,
   TRANSPARENT,
 } from "~/styles/tailwind";
-import invariant from "tiny-invariant";
 
 import { deleteShopping, editShopping } from "~/models/shopping.server";
 import { requireUserId } from "~/session.server";
@@ -102,12 +101,12 @@ export function ShoppingContainer({ shopping }: Props) {
       { id: items.length + 1, description: "", bought: false, recipe: "" },
     ]);
   };
-  const updateItems = (newId: number, newDescription: string) =>
+  const updateItems = (newId: number, newDescription: string, newBought: boolean) =>
     setItems(
       items.map((item) => {
         if (item.id === newId) {
           // Create a *new* object with changes
-          return { ...item, description: newDescription };
+          return { ...item, description: newDescription, bought: newBought };
         } else {
           // No changes
           return item;
@@ -157,25 +156,25 @@ export function ShoppingContainer({ shopping }: Props) {
               renderItem={(item) => (
                 <SortableList.Item id={item.id} recipe={item.recipe}>
                   <>
-                    <div>
+                    <div key={item.id}>
                       <input
                         type="checkbox"
                         name="bougthItem"
                         value={item.id}
                         className="checkbox-info checkbox"
                         checked={item.bought}
-                        onChange={() => console.log(item.bought)}
+                        onChange={() => {updateItems(item.id, item.description, !item.bought);}}
                       />
                       <input
                         id={item.id.toString()}
                         value={item.description}
                         onChange={(event) => {
-                          updateItems(item.id, event.target.value);
+                          updateItems(item.id, event.target.value, item.bought);
                         }}
                         name="item"
                         className={
                           item.bought
-                            ? `${SORTABLE_ITEM_STYLE} ${TRANSPARENT} mx-20 py-0 line-through`
+                            ? `${SORTABLE_ITEM_STYLE} ${TRANSPARENT} mx-2 py-0 line-through`
                             : `${SORTABLE_ITEM_STYLE} ${TRANSPARENT} mx-2 py-0`
                         }
                         aria-invalid={

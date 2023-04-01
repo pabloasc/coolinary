@@ -41,13 +41,9 @@ export async function action({ request }: ActionArgs) {
   }
 
   return redirect("/");
-
-  //return json({ recipeList });
-  //return json({ error: { title: null, recipes: recipeList } });
 }
 
 export default function AddShoppingListPage() {
   const actionData = useActionData<typeof action>();
-
-  return <p>Creating shopping list</p>;
+  return;
 }
