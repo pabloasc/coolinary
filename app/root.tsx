@@ -10,7 +10,6 @@ import {
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
-import baseStylesheetUrl from "./styles/base.css";
 import sortableListStylesheetUrl from "./styles/SortableList.css";
 
 import { getUser } from "./session.server";
@@ -18,7 +17,6 @@ import { getUser } from "./session.server";
 export const links: LinksFunction = () => {
   return [
     { rel: "stylesheet", href: tailwindStylesheetUrl },
-    { rel: "stylesheet", href: baseStylesheetUrl },
     { rel: "stylesheet", href: sortableListStylesheetUrl },
   ];
 };
