@@ -25,6 +25,7 @@ export async function action({ request }: ActionArgs) {
     recipe.ingredients.map((ingredient) => {
       ingredient.id = itemId++;
       ingredient.recipe = recipe.title;
+      ingredient.bought = false;
       allItems.push(ingredient);
     });
   });

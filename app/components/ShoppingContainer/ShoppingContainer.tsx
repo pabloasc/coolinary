@@ -91,13 +91,16 @@ export function ShoppingContainer({ shopping }: Props) {
     shopping?.items
       ? shopping?.items
       : [
-          { id: 1, description: "", recipe: "" },
-          { id: 2, description: "", recipe: "" },
-          { id: 3, description: "", recipe: "" },
+          { id: 1, description: "", bought: false, recipe: "" },
+          { id: 2, description: "", bought: false, recipe: "" },
+          { id: 3, description: "", bought: false, recipe: "" },
         ]
   );
   const addMoreItems = () => {
-    setItems([...items, { id: items.length + 1, description: "", recipe: "" }]);
+    setItems([
+      ...items,
+      { id: items.length + 1, description: "", bought: false, recipe: "" },
+    ]);
   };
   const updateItems = (newId: number, newDescription: string) =>
     setItems(
@@ -160,6 +163,8 @@ export function ShoppingContainer({ shopping }: Props) {
                         name="bougthItem"
                         value={item.id}
                         className="checkbox-info checkbox"
+                        checked={item.bought}
+                        onChange={() => console.log(item.bought)}
                       />
                       <input
                         id={item.id.toString()}
@@ -168,7 +173,11 @@ export function ShoppingContainer({ shopping }: Props) {
                           updateItems(item.id, event.target.value);
                         }}
                         name="item"
-                        className={`${SORTABLE_ITEM_STYLE} ${TRANSPARENT} mx-2 py-0`}
+                        className={
+                          item.bought
+                            ? `${SORTABLE_ITEM_STYLE} ${TRANSPARENT} mx-20 py-0 line-through`
+                            : `${SORTABLE_ITEM_STYLE} ${TRANSPARENT} mx-2 py-0`
+                        }
                         aria-invalid={
                           actionData?.errors?.items ? true : undefined
                         }

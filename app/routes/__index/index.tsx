@@ -41,10 +41,10 @@ export default function Index() {
   return (
     <>
       {!user && (
-        <div className="grid grid-cols-2 items-center justify-center ">
+        <div className="grid grid-cols-1 items-center justify-center md:grid-cols-2 ">
           <span>
             <h1 className="font-title mb-6 font-serif text-4xl font-extrabold sm:text-5xl lg:text-6xl">
-              Turn your familiar recipes into grocery lists
+              Turn your family recipes into grocery lists
             </h1>
             <h2 className="font-title mb-16 font-serif text-xl">
               Add your recipes and create yout lists with no effort
