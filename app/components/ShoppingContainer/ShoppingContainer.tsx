@@ -101,7 +101,11 @@ export function ShoppingContainer({ shopping }: Props) {
       { id: items.length + 1, description: "", bought: false, recipe: "" },
     ]);
   };
-  const updateItems = (newId: number, newDescription: string, newBought: boolean) =>
+  const updateItems = (
+    newId: number,
+    newDescription: string,
+    newBought: boolean
+  ) =>
     setItems(
       items.map((item) => {
         if (item.id === newId) {
@@ -163,9 +167,12 @@ export function ShoppingContainer({ shopping }: Props) {
                         value={item.id}
                         className="checkbox-info checkbox"
                         checked={item.bought}
-                        onChange={() => {updateItems(item.id, item.description, !item.bought);}}
+                        onChange={() => {
+                          updateItems(item.id, item.description, !item.bought);
+                        }}
                       />
                       <input
+                        autoFocus
                         id={item.id.toString()}
                         value={item.description}
                         onChange={(event) => {

@@ -30,6 +30,9 @@ export const meta: MetaFunction = () => ({
 export async function loader({ request }: LoaderArgs) {
   return json({
     user: await getUser(request),
+    ENV: {
+      GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    },
   });
 }
 
@@ -39,6 +42,11 @@ export default function App() {
       <head>
         <Meta />
         <Links />
+        <script
+          src="https://accounts.google.com/gsi/client"
+          async
+          defer
+        ></script>
       </head>
       <body className="h-full">
         <Outlet />

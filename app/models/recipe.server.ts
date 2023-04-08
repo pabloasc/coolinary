@@ -58,7 +58,7 @@ export function createRecipe({
       id: new ObjectId().toString(),
       title,
       body,
-      ingredients: ingredients,
+      ingredients: ingredients.filter((ingr) => ingr.description !== ""),
       user: {
         connect: {
           id: userId,
@@ -81,7 +81,7 @@ export function editRecipe({
     data: {
       title,
       body,
-      ingredients: ingredients,
+      ingredients: ingredients.filter((ingr) => ingr.description !== ""),
     },
   });
 }

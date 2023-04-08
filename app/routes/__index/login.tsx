@@ -1,61 +1,82 @@
 import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
+
+import {
+  Form,
+  Link,
+  useActionData,
+  useSearchParams,
+  useLoaderData,
+} from "@remix-run/react";
 import * as React from "react";
 
 import { createUserSession, getUserId } from "~/session.server";
-import { verifyLogin } from "~/models/user.server";
+import { verifyLogin, createUserSocialLogin } from "~/models/user.server";
 import { safeRedirect, validateEmail } from "~/utils";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
   if (userId) return redirect("/");
-  return json({});
+  return json({ ENV: { GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID } });
 }
 
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const email = formData.get("email");
-  const password = formData.get("password");
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
-  const remember = formData.get("remember");
+  const socialLogin = formData.get("socialLogin");
 
-  if (!validateEmail(email)) {
-    return json(
-      { errors: { email: "Email is invalid", password: null } },
-      { status: 400 }
-    );
+  if (socialLogin !== "true") {
+    const password = formData.get("password");
+    const remember = formData.get("remember");
+
+    if (!validateEmail(email)) {
+      return json(
+        { errors: { email: "Email is invalid", password: null } },
+        { status: 400 }
+      );
+    }
+
+    if (typeof password !== "string" || password.length === 0) {
+      return json(
+        { errors: { email: null, password: "Password is required" } },
+        { status: 400 }
+      );
+    }
+
+    if (password.length < 8) {
+      return json(
+        { errors: { email: null, password: "Password is too short" } },
+        { status: 400 }
+      );
+    }
+
+    const user = await verifyLogin(email, password);
+
+    if (!user) {
+      return json(
+        { errors: { email: "Invalid email or password", password: null } },
+        { status: 400 }
+      );
+    }
+    return createUserSession({
+      request,
+      userId: user.id,
+      remember: remember === "on" ? true : false,
+      redirectTo,
+    });
+  } else {
+    const user = await createUserSocialLogin(email);
+    console.log("user", user);
+    if (user) {
+      return createUserSession({
+        request,
+        userId: user.id,
+        remember: true,
+        redirectTo,
+      });
+    }
   }
-
-  if (typeof password !== "string" || password.length === 0) {
-    return json(
-      { errors: { email: null, password: "Password is required" } },
-      { status: 400 }
-    );
-  }
-
-  if (password.length < 8) {
-    return json(
-      { errors: { email: null, password: "Password is too short" } },
-      { status: 400 }
-    );
-  }
-
-  const user = await verifyLogin(email, password);
-
-  if (!user) {
-    return json(
-      { errors: { email: "Invalid email or password", password: null } },
-      { status: 400 }
-    );
-  }
-
-  return createUserSession({
-    request,
-    userId: user.id,
-    remember: remember === "on" ? true : false,
-    redirectTo,
-  });
 }
 
 export const meta: MetaFunction = () => {
@@ -65,6 +86,7 @@ export const meta: MetaFunction = () => {
 };
 
 export default function LoginPage() {
+  const data = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") || "/";
   const actionData = useActionData<typeof action>();
@@ -78,6 +100,67 @@ export default function LoginPage() {
       passwordRef.current?.focus();
     }
   }, [actionData]);
+
+  const divRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (divRef.current) {
+      window.google.accounts.id.initialize({
+        id: "g_id_onload",
+        client_id: data.ENV.GOOGLE_CLIENT_ID,
+        context: "signup",
+        ux_mode: "popup",
+        login_uri: "http://localhost:3000/login",
+        auto_select: true,
+        itp_support: true,
+        callback: validateGoogleLogin,
+      });
+      window.google.accounts.id.renderButton(divRef.current, {
+        theme: "outline",
+        size: "medium",
+        type: "standard",
+        text: "continue_with",
+        shape: "rectangular",
+      });
+    }
+  }, [divRef.current]);
+
+  function validateGoogleLogin(res: any) {
+    // This is the function that will be executed once the authentication with google is finished
+    function parseJwt(token: string) {
+      var base64Url = token.split(".")[1];
+      var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      var jsonPayload = decodeURIComponent(
+        window
+          .atob(base64)
+          .split("")
+          .map(function (c) {
+            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join("")
+      );
+      return JSON.parse(jsonPayload);
+    }
+
+    const token = res.credential;
+    const decoded = parseJwt(token);
+    if (decoded.email) {
+      var formData = new FormData();
+      formData.append("socialLogin", "true");
+      formData.append("email", decoded.email);
+      let request = new XMLHttpRequest();
+      request.onreadystatechange = function () {
+        // listen for state changes
+        if (request.readyState == 4 && request.status == 200) {
+          // when completed we can move away
+          console.log("asd completado");
+          window.location.reload();
+        }
+      };
+      request.open("POST", "/login");
+      request.send(formData);
+    }
+  }
 
   return (
     <div className="flex min-h-full flex-col justify-center">
@@ -173,6 +256,8 @@ export default function LoginPage() {
             </div>
           </div>
         </Form>
+
+        <div ref={divRef}></div>
       </div>
     </div>
   );

@@ -86,7 +86,7 @@ export function editShopping({
   id,
   body,
   title,
-  items = {},
+  items = [],
 }: Pick<Shopping, "id" | "body" | "title" | "items">) {
   return prisma.shopping.update({
     where: {
@@ -95,7 +95,7 @@ export function editShopping({
     data: {
       title,
       body,
-      items: items,
+      items: items.filter((itm) => itm.description !== ""),
     },
   });
 }

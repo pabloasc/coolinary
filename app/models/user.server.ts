@@ -1,5 +1,7 @@
+import { redirect } from "@remix-run/node";
 import type { Password, User } from "@prisma/client";
-import { ObjectId } from 'bson';
+
+import { ObjectId } from "bson";
 
 import bcrypt from "bcryptjs";
 
@@ -30,6 +32,22 @@ export async function createUser(email: User["email"], password: string) {
       },
     },
   });
+}
+
+export async function createUserSocialLogin(email: string) {
+  //First, Check if user with email exists
+  const user = prisma.user.findUnique({ where: { email } });
+
+  //Then, if it does not exists, create the user
+  if (!user) {
+    return prisma.user.create({
+      data: {
+        id: new ObjectId().toString(),
+        email,
+      },
+    });
+  }
+  return user;
 }
 
 export async function deleteUserByEmail(email: User["email"]) {
