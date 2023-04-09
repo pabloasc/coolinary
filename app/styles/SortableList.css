@@ -1,15 +1,14 @@
 .SortableList {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
   padding: 0;
   list-style: none;
 }
 
 .SortableItem {
   display: flex;
-  justify-content: space-between;
-  flex-grow: 1;
+  flex-wrap: nowrap;
   align-items: center;
 }
 

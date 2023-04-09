@@ -70,7 +70,7 @@ export function DragHandle() {
   const { attributes, listeners, ref } = useContext(SortableItemContext);
 
   return (
-    <button className="DragHandle" {...attributes} {...listeners} ref={ref}>
+    <div className="DragHandle" {...attributes} {...listeners} ref={ref}>
       <svg
         fill="none"
         stroke="currentColor"
@@ -86,6 +86,6 @@ export function DragHandle() {
           d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
         ></path>
       </svg>
-    </button>
+    </div>
   );
 }
