@@ -3,6 +3,12 @@
 - [Remix Docs](https://remix.run/docs)
 - [Netlify Functions](https://www.netlify.com/products/functions/)
 
+## Update database
+
+```sh
+npx prisma db push
+```
+
 ## Netlify Setup
 
 1. Install the [Netlify CLI](https://www.netlify.com/products/dev/):

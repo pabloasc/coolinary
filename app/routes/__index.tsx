@@ -24,7 +24,7 @@ export default function Index() {
                     className="dropdown-content menu rounded-box mt-4 w-52 bg-base-100 p-2 shadow"
                   >
                     <li>
-                      <a>Settings</a>
+                      <Link to="/settings/edit">Settings</Link>
                     </li>
                     {user && (
                       <>
@@ -95,6 +95,9 @@ export default function Index() {
               </svg>
             </a>
           </div>
+        </div>
+        <div>
+          <Link to="/termsandconditions">Terms and conditions</Link>
         </div>
         <div>
           <p>Copyright © 2023 - Meristemo Labs</p>

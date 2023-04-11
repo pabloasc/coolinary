@@ -82,3 +82,14 @@ export async function verifyLogin(
 
   return userWithoutPassword;
 }
+
+export function editUser({ id, language }: Pick<User, "id" | "language">) {
+  return prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      language,
+    },
+  });
+}
