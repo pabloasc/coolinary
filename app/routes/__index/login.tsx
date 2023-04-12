@@ -110,17 +110,17 @@ export default function LoginPage() {
         client_id: data.ENV.GOOGLE_CLIENT_ID,
         context: "signup",
         ux_mode: "popup",
-        login_uri: "http://localhost:3000/login",
         auto_select: true,
         itp_support: true,
         callback: validateGoogleLogin,
       });
       window.google.accounts.id.renderButton(divRef.current, {
         theme: "outline",
-        size: "medium",
+        size: "large",
         type: "standard",
         text: "continue_with",
         shape: "rectangular",
+        width: 300,
       });
     }
   }, [divRef.current]);
@@ -165,6 +165,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-full flex-col justify-center">
       <div className="mx-auto w-full max-w-md px-8">
+        {/* Activate regular login when having password recovery
         <Form method="post" className="space-y-6">
           <div>
             <label
@@ -256,7 +257,10 @@ export default function LoginPage() {
             </div>
           </div>
         </Form>
-
+              */}
+        <b>Join us using your Google account</b>
+        <br />
+        <br />
         <div ref={divRef}></div>
       </div>
     </div>

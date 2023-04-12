@@ -38,6 +38,12 @@ export default function Index() {
       });
     }
   };
+
+  const handleSubmitNewList = (e: any) => {
+    // e.preventDefault();
+    setUserInfo({ selectedRecipes: [] });
+  };
+
   return (
     <>
       {!user && (
@@ -77,7 +83,7 @@ export default function Index() {
           </div>
         </>
       )}
-      <Form method="post" action="shopping/new">
+      <Form method="post" onSubmit={handleSubmitNewList} action="shopping/new">
         <div className="container mx-auto mt-4">
           {data?.recipeListItems?.length === 0 ? (
             <p className="card-title p-4">No recipes yet</p>
@@ -89,6 +95,7 @@ export default function Index() {
                     <div className="form-control">
                       <label className="label cursor-pointer">
                         <input
+                          checked={userinfo.selectedRecipes.includes(recipe.id)}
                           type="checkbox"
                           name="selectedRecipesCheckbox"
                           value={recipe.id}
@@ -142,7 +149,7 @@ export default function Index() {
             </div>
           )}
           <Link to="/recipe/new" className="p-4 text-xl text-blue-500">
-            + Add your own recipes
+            + Add recipes
           </Link>
         </div>
         {userinfo.selectedRecipes && userinfo.selectedRecipes.length > 0 && (
