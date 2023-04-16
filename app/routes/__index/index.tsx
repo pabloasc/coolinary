@@ -7,6 +7,7 @@ import { ShoppingContainer } from "~/components/ShoppingContainer";
 import { useState } from "react";
 import { getLatestShopping } from "~/models/shopping.server";
 import { getRecipeListItems } from "~/models/recipe.server";
+import { getTranslation } from "~/models/languages"
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
@@ -66,9 +67,9 @@ export default function Index() {
               <label className="label cursor-pointer">
                 <span className="card-title">
                   {!collapsed ? (
-                    <>Collapse Ingredients</>
+                    <>{getTranslation("COLLAPSE_INGREDIENTS", user.language)}</>
                   ) : (
-                    <>Show Ingredients</>
+                    <>{getTranslation("SHOW_INGREDIENTS", user?.language)}</>
                   )}
                 </span>
                 <input

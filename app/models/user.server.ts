@@ -30,6 +30,7 @@ export async function createUser(email: User["email"], password: string) {
           hash: hashedPassword,
         },
       },
+      language: "English"
     },
   });
 }
@@ -44,6 +45,7 @@ export async function createUserSocialLogin(email: string) {
       data: {
         id: new ObjectId().toString(),
         email,
+        language: "English"
       },
     });
   }
