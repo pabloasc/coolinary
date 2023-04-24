@@ -64,13 +64,10 @@ export async function actionRequest({ request }: ActionArgs) {
       { status: 400 }
     );
   } else {
-    // remove ingredients with empty description and restore indexing
-    var properIndex = 1;
-    ingredients.forEach((i: Ingredient) => {
-      if (i.description.trim() !== "") {
-        properArray.push({ id: properIndex++, description: i.description });
-      }
-    });
+    // remove ingredients with empty description
+    properArray = ingredients.filter(
+      (i: Ingredient) => i.description.trim() !== ""
+    );
   }
 
   const recipe =

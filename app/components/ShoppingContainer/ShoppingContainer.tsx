@@ -16,6 +16,7 @@ import {
 
 import { deleteShopping, editShopping } from "~/models/shopping.server";
 import { requireUserId } from "~/session.server";
+import { Item } from "@prisma/client";
 
 interface Props {
   shopping?: Shopping;
@@ -64,7 +65,8 @@ export async function actionRequest({ request }: ActionArgs) {
     );
   }
 
-  if (typeof items !== "object") {
+  var properArray: Item[] = [];
+  if (items.length === 0) {
     return json(
       {
         errors: {
@@ -74,10 +76,15 @@ export async function actionRequest({ request }: ActionArgs) {
       },
       { status: 400 }
     );
+  } else {
+    // remove items with empty description
+    properArray = items.filter((i: Item) => i.description.trim() !== "");
   }
 
   const shoppingList =
-    id && id !== "" && (await editShopping({ id, title, body, items }));
+    id &&
+    id !== "" &&
+    (await editShopping({ id, title, body, items: properArray }));
 
   return redirect("/");
 }
