@@ -4,6 +4,7 @@ import { Form, useActionData } from "@remix-run/react";
 import { SortableList } from "~/components";
 import React, { useState } from "react";
 import { Recipe, Ingredient } from "~/types";
+import { generateId } from "~/utils";
 import {
   INPUT_STYLE,
   SORTABLE_ITEM_STYLE,
@@ -89,13 +90,13 @@ export function RecipeContainer({ recipe }: Props) {
     recipe?.ingredients
       ? recipe?.ingredients
       : [
-          { id: 1, description: "" },
-          { id: 2, description: "" },
-          { id: 3, description: "" },
+          { id: generateId(), description: "" },
+          { id: generateId(), description: "" },
+          { id: generateId(), description: "" },
         ]
   );
   const addMoreIngredients = () => {
-    setItems([...items, { id: items.length + 1, description: "" }]);
+    setItems([...items, { id: generateId(), description: "" }]);
   };
   const updateIngredients = (newId: number, newDescription: string) =>
     setItems(
@@ -109,16 +110,6 @@ export function RecipeContainer({ recipe }: Props) {
         }
       })
     );
-
-  React.useEffect(() => {
-    if (actionData?.errors?.title) {
-      titleRef.current?.focus();
-    } else if (actionData?.errors?.ingredients) {
-      // ingredientsRef.current?.focus();
-    }
-  }, [actionData]);
-
-  var SortKey = 1;
 
   return (
     <Form

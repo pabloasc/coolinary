@@ -6,6 +6,7 @@ import { ShoppingItem } from "~/types/shopping";
 import { getRecipeListByIds } from "~/models/recipe.server";
 import { createShopping } from "~/models/shopping.server";
 import { requireUserId } from "~/session.server";
+import { generateId } from "~/utils";
 export async function action({ request }: ActionArgs) {
   const userId = await requireUserId(request);
   const formData = await request.formData();
@@ -17,13 +18,12 @@ export async function action({ request }: ActionArgs) {
   if (!recipeList) {
     throw new Response("Not Found", { status: 404 });
   }
-  let itemId = 1;
 
   //Save shopping list
   const allItems: ShoppingItem[] = [];
   recipeList.map((recipe) => {
     recipe.ingredients.map((ingredient) => {
-      ingredient.id = itemId++;
+      ingredient.id = generateId();
       ingredient.recipe = recipe.title;
       ingredient.bought = false;
       allItems.push(ingredient);
