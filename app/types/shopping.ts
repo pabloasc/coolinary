@@ -11,4 +11,5 @@ export type Shopping = {
   body?: string;
   items?: ShoppingItem[];
   userId: string;
+  createdAt?: Date;
 };

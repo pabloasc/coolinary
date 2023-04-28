@@ -73,3 +73,17 @@ export function validateEmail(email: unknown): email is string {
 export function generateId(): number {
   return Math.floor(Math.random() * Date.now());
 }
+
+export function createListTitle(createdAt: Date, language: string): string {
+  const formatDate = new Date(createdAt);
+  switch (language) {
+    case "English":
+      return "List Created at" + formatDate.toLocaleDateString("en-US");
+    case "Espanol":
+      return "Lista del " + formatDate.toLocaleDateString("es-ES");
+    case "Dutch":
+      return "Boodschappenlijst van " + formatDate.toLocaleDateString("nl-NL");
+    default:
+      return "List Created at" + formatDate.toLocaleDateString();
+  }
+}

@@ -31,6 +31,22 @@ export function getLatestShopping({ userId }: { userId?: User["id"] }) {
       title: true,
       items: true,
       userId: true,
+      createdAt: true,
+    },
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
+export function getAllShopping({ userId }: { userId?: User["id"] }) {
+  return prisma.shopping.findMany({
+    select: {
+      id: true,
+      body: true,
+      title: true,
+      items: true,
+      userId: true,
+      createdAt: true,
     },
     where: { userId },
     orderBy: { createdAt: "desc" },

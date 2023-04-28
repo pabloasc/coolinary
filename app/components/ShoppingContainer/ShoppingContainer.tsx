@@ -2,6 +2,7 @@ import type { ActionArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
 import { SortableList } from "~/components";
+import { useOptionalUser, createListTitle } from "~/utils";
 import React, { useState } from "react";
 import { Shopping } from "~/types";
 import { generateId } from "~/utils";
@@ -90,6 +91,7 @@ export async function actionRequest({ request }: ActionArgs) {
 }
 
 export function ShoppingContainer({ shopping }: Props) {
+  const user = useOptionalUser();
   const actionData = useActionData<typeof action>();
   const titleRef = React.useRef<HTMLInputElement>(null);
   const [title, setTitle] = useState(shopping?.title ? shopping?.title : "");
@@ -147,7 +149,11 @@ export function ShoppingContainer({ shopping }: Props) {
           <div>
             <input
               name="title"
-              value={title ? title : "Your Shopping List"}
+              value={
+                title
+                  ? title
+                  : createListTitle(shopping?.createdAt, user?.language)
+              }
               onChange={(event) => setTitle(event?.target.value)}
               className={`${INPUT_STYLE} ${TRANSPARENT} card-title text-xl font-extrabold`}
               aria-invalid={actionData?.errors?.title ? true : undefined}

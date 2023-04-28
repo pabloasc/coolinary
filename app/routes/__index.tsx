@@ -24,6 +24,10 @@ export default function Index() {
                     className="dropdown-content menu rounded-box mt-4 w-52 bg-base-100 p-2 shadow"
                   >
                     <li>
+                      <Link to="/shopping">Your lists</Link>
+                    </li>
+                    <hr></hr>
+                    <li>
                       <Link to="/settings/edit">Settings</Link>
                     </li>
                     {user && (
