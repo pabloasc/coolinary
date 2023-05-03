@@ -87,7 +87,7 @@ export async function actionRequest({ request }: ActionArgs) {
     id !== "" &&
     (await editShopping({ id, title, body, items: properArray }));
 
-  return redirect("/");
+  return redirect(request.headers.get("Referer"));
 }
 
 export function ShoppingContainer({ shopping }: Props) {
@@ -150,7 +150,7 @@ export function ShoppingContainer({ shopping }: Props) {
             <input
               name="title"
               value={
-                title
+                shopping?.title
                   ? title
                   : createListTitle(shopping?.createdAt, user?.language)
               }

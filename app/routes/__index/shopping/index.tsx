@@ -21,15 +21,30 @@ export default function ShoppingIndexPage() {
   );
   return (
     <>
-      {data.allShopping.map((shopping) => (
-        <ul>
-          <li onClick={() => setSelectedShopping(shopping)}>
-            {shopping.title
-              ? shopping.title
-              : createListTitle(shopping.createdAt, user?.language)}
-          </li>
-        </ul>
-      ))}
+      <div className="overflow-x-auto">
+        <table className="table table-compact w-full">
+          <thead>
+            <tr>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.allShopping.map((shopping) => (
+              <tr>
+                <td
+                  onClick={() => setSelectedShopping(shopping)}
+                  className="cursor-pointer  bg-white"
+                >
+                  {" "}
+                  {shopping.title
+                    ? shopping.title
+                    : createListTitle(shopping.createdAt, user?.language)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <div key={selectedShopping?.id} className="container mx-auto mt-16">
         <ShoppingContainer shopping={selectedShopping}></ShoppingContainer>
