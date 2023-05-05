@@ -67,7 +67,6 @@ export async function action({ request }: ActionArgs) {
     });
   } else {
     const user = await createUserSocialLogin(email);
-    console.log("user", user);
     if (user) {
       return createUserSession({
         request,

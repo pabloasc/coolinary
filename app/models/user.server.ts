@@ -30,14 +30,14 @@ export async function createUser(email: User["email"], password: string) {
           hash: hashedPassword,
         },
       },
-      language: "English"
+      language: "English",
     },
   });
 }
 
 export async function createUserSocialLogin(email: string) {
   //First, Check if user with email exists
-  const user = prisma.user.findUnique({ where: { email } });
+  const user = await prisma.user.findUnique({ where: { email: email } });
 
   //Then, if it does not exists, create the user
   if (!user) {
@@ -45,7 +45,7 @@ export async function createUserSocialLogin(email: string) {
       data: {
         id: new ObjectId().toString(),
         email,
-        language: "English"
+        language: "English",
       },
     });
   }

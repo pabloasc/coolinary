@@ -17,7 +17,7 @@ export default function ShoppingIndexPage() {
   const user = useOptionalUser();
   const data = user ? useLoaderData<typeof loader>() : { allShopping: [] };
   const [selectedShopping, setSelectedShopping] = useState(
-    data.allShopping.length > 0 ? data.allShopping.at(-1) : []
+    data.allShopping.length > 0 ? data.allShopping.at(-1) : null
   );
   return (
     <>
@@ -29,26 +29,32 @@ export default function ShoppingIndexPage() {
             </tr>
           </thead>
           <tbody>
-            {data.allShopping.map((shopping) => (
-              <tr>
-                <td
-                  onClick={() => setSelectedShopping(shopping)}
-                  className="cursor-pointer  bg-white"
-                >
-                  {" "}
-                  {shopping.title
-                    ? shopping.title
-                    : createListTitle(shopping.createdAt, user?.language)}
-                </td>
-              </tr>
-            ))}
+            {data.allShopping.length ? (
+              data.allShopping.map((shopping) => (
+                <tr>
+                  <td
+                    onClick={() => setSelectedShopping(shopping)}
+                    className="cursor-pointer  bg-white"
+                  >
+                    {" "}
+                    {shopping.title
+                      ? shopping.title
+                      : createListTitle(shopping.createdAt, user?.language)}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <p>No shopping lists</p>
+            )}
           </tbody>
         </table>
       </div>
 
-      <div key={selectedShopping?.id} className="container mx-auto mt-16">
-        <ShoppingContainer shopping={selectedShopping}></ShoppingContainer>
-      </div>
+      {selectedShopping && (
+        <div key={selectedShopping?.id} className="container mx-auto mt-16">
+          <ShoppingContainer shopping={selectedShopping}></ShoppingContainer>
+        </div>
+      )}
 
       <div className="container mx-auto mt-4">
         <Outlet />
