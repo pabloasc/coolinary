@@ -7,7 +7,7 @@ import { ShoppingContainer } from "~/components/ShoppingContainer";
 import { useState } from "react";
 import { getLatestShopping } from "~/models/shopping.server";
 import { getRecipeListItems } from "~/models/recipe.server";
-import { getTranslation } from "~/models/languages"
+import { getTranslation } from "~/models/languages";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
@@ -21,28 +21,53 @@ export default function Index() {
   const data = user
     ? useLoaderData<typeof loader>()
     : { recipeListItems: [], latestShopping: null };
-  const [userinfo, setUserInfo] = useState({ selectedRecipes: [] });
+  const [userInfo, setUserInfo] = useState({
+    selectedRecipes: [],
+    selectedIngredients: [],
+  });
   const [collapsed, setCollapsed] = useState(true);
 
-  const handleChange = (e) => {
+  const handleChangeRecipes = (e) => {
     // Destructuring
     const { value, checked } = e.target;
-    const { selectedRecipes } = userinfo;
+    const { selectedRecipes, selectedIngredients } = userInfo;
 
     if (checked) {
       setUserInfo({
         selectedRecipes: [...selectedRecipes, value],
+        selectedIngredients,
       });
     } else {
       setUserInfo({
         selectedRecipes: selectedRecipes.filter((e) => e !== value),
+        selectedIngredients,
+      });
+    }
+  };
+
+  const handleChangeIngredients = (e) => {
+    // Destructuring
+    const { value, checked } = e.target;
+    const { selectedRecipes, selectedIngredients } = userInfo;
+
+    console.log(userInfo);
+
+    if (checked) {
+      setUserInfo({
+        selectedRecipes,
+        selectedIngredients: [...selectedIngredients, value],
+      });
+    } else {
+      setUserInfo({
+        selectedRecipes,
+        selectedIngredients: selectedIngredients.filter((e) => e !== value),
       });
     }
   };
 
   const handleSubmitNewList = (e: any) => {
     // e.preventDefault();
-    setUserInfo({ selectedRecipes: [] });
+    setUserInfo({ selectedRecipes: [], selectedIngredients: [] });
   };
 
   return (
@@ -91,17 +116,17 @@ export default function Index() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {data?.recipeListItems?.map((recipe) => (
-                <div className="card m-2 transform cursor-pointer rounded-lg border border-gray-400 bg-white transition-all duration-200 hover:-translate-y-1 hover:border-opacity-0 hover:shadow-md">
+                <div className="m-2 transform cursor-pointer rounded-lg border border-gray-400 bg-white transition-all duration-200 hover:-translate-y-1 hover:border-opacity-0 hover:shadow-md">
                   <div className="card-body p-5">
                     <div className="form-control">
                       <label className="label cursor-pointer">
                         <input
-                          checked={userinfo.selectedRecipes.includes(recipe.id)}
+                          checked={userInfo.selectedRecipes.includes(recipe.id)}
                           type="checkbox"
                           name="selectedRecipesCheckbox"
                           value={recipe.id}
                           className="checkbox-info checkbox"
-                          onChange={handleChange}
+                          onChange={handleChangeRecipes}
                         />
                         <span className="mr-5 ml-5 font-bold">
                           {recipe.title}
@@ -130,20 +155,24 @@ export default function Index() {
                     <input
                       type="hidden"
                       name="selectedRecipesList"
-                      value={userinfo.selectedRecipes}
+                      value={userInfo.selectedRecipes}
                     ></input>
-                    {!collapsed &&
-                      recipe.ingredients?.map(
-                        (ingredient: { id: number; description?: string }) => {
-                          return (
-                            ingredient?.description !== "" && (
-                              <p className="font-serif text-sm font-light text-gray-700">
-                                {ingredient?.description}
-                              </p>
-                            )
-                          );
-                        }
-                      )}
+
+                    {recipe.ingredients?.map(
+                      (ingredient: { id: number; description?: string }) =>
+                        ingredient?.description !== "" && (
+                          <p className="font-serif text-sm font-light text-gray-700">
+                            <input
+                              type="checkbox"
+                              name="selectedIngredientCheckbox"
+                              value={ingredient.id}
+                              className="checkbox-info checkbox"
+                              onChange={handleChangeIngredients}
+                            />
+                            {ingredient?.description}
+                          </p>
+                        )
+                    )}
                   </div>
                 </div>
               ))}
@@ -153,7 +182,7 @@ export default function Index() {
             + Add recipes
           </Link>
         </div>
-        {userinfo.selectedRecipes && userinfo.selectedRecipes.length > 0 && (
+        {userInfo.selectedRecipes && userInfo.selectedRecipes.length > 0 && (
           <div className="container mx-auto my-12 grid grid-cols-1">
             <button
               name="submit"

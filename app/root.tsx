@@ -9,7 +9,7 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
-import tailwindStylesheetUrl from "./styles/tailwind.css";
+import tailwindStylesheetUrl from "./dist/tailwind.css";
 import sortableListStylesheetUrl from "./styles/SortableList.css";
 
 import { getUser } from "./session.server";
