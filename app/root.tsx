@@ -9,7 +9,7 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
-import tailwindStylesheetUrl from "./dist/tailwind.css";
+import tailwindStylesheetUrl from "./styles/app.css";
 import sortableListStylesheetUrl from "./styles/SortableList.css";
 
 import { getUser } from "./session.server";
@@ -38,7 +38,7 @@ export async function loader({ request }: LoaderArgs) {
 
 export default function App() {
   return (
-    <html data-theme="myLight" lang="en">
+    <html data-theme="winter" lang="en">
       <head>
         <Meta />
         <Links />

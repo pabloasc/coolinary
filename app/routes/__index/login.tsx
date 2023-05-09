@@ -23,6 +23,7 @@ export async function loader({ request }: LoaderArgs) {
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const email = formData.get("email");
+  const picture = formData.get("picture");
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
   const socialLogin = formData.get("socialLogin");
 
@@ -66,7 +67,7 @@ export async function action({ request }: ActionArgs) {
       redirectTo,
     });
   } else {
-    const user = await createUserSocialLogin(email);
+    const user = await createUserSocialLogin(email, picture);
     if (user) {
       return createUserSession({
         request,
@@ -86,8 +87,6 @@ export const meta: MetaFunction = () => {
 
 export default function LoginPage() {
   const data = useLoaderData<typeof loader>();
-  const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") || "/";
   const actionData = useActionData<typeof action>();
   const emailRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
@@ -143,10 +142,12 @@ export default function LoginPage() {
 
     const token = res.credential;
     const decoded = parseJwt(token);
+    console.log(decoded)
     if (decoded.email) {
       var formData = new FormData();
       formData.append("socialLogin", "true");
       formData.append("email", decoded.email);
+      formData.append("picture", decoded.picture);
       let request = new XMLHttpRequest();
       request.onreadystatechange = function () {
         // listen for state changes

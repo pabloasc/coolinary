@@ -1,5 +1,6 @@
 import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
+import { ObjectId } from "bson";
 
 import type { User } from "~/models/user.server";
 
@@ -70,8 +71,8 @@ export function validateEmail(email: unknown): email is string {
   return typeof email === "string" && email.length > 3 && email.includes("@");
 }
 
-export function generateId(): number {
-  return Math.floor(Math.random() * Date.now());
+export function generateId(): string {
+  return new ObjectId().toString();
 }
 
 export function createListTitle(createdAt: Date, language: string): string {

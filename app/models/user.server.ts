@@ -1,4 +1,3 @@
-import { redirect } from "@remix-run/node";
 import type { Password, User } from "@prisma/client";
 
 import { ObjectId } from "bson";
@@ -35,7 +34,7 @@ export async function createUser(email: User["email"], password: string) {
   });
 }
 
-export async function createUserSocialLogin(email: string) {
+export async function createUserSocialLogin(email: string, picture: string) {
   //First, Check if user with email exists
   const user = await prisma.user.findUnique({ where: { email: email } });
 
@@ -45,6 +44,7 @@ export async function createUserSocialLogin(email: string) {
       data: {
         id: new ObjectId().toString(),
         email,
+        image: picture,
         language: "English",
       },
     });

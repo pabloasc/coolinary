@@ -93,7 +93,6 @@ export async function actionRequest({ request }: ActionArgs) {
 export function ShoppingContainer({ shopping }: Props) {
   const user = useOptionalUser();
   const actionData = useActionData<typeof action>();
-  const titleRef = React.useRef<HTMLInputElement>(null);
   const [title, setTitle] = useState(shopping?.title ? shopping?.title : "");
   const [body, setBody] = useState(shopping?.body ? shopping?.body : "");
   const [editing, setEditing] = useState(0);
@@ -115,7 +114,7 @@ export function ShoppingContainer({ shopping }: Props) {
     setItems(items.filter((obj) => obj.id !== itemId));
   };
   const updateItems = (
-    newId: number,
+    newId: string,
     newDescription: string,
     newBought: boolean
   ) =>

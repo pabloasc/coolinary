@@ -22,6 +22,7 @@ type Ingredient {
 model User {
   id        String     @id @map("_id")
   email     String     @unique
+  image     String?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   password  Password?
