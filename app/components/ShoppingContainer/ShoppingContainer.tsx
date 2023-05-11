@@ -15,19 +15,26 @@ import {
   TRANSPARENT,
 } from "~/styles/tailwind";
 
-import { deleteShopping, editShopping } from "~/models/shopping.server";
+import {
+  deleteShopping,
+  editShopping,
+  createShopping,
+} from "~/models/shopping.server";
 import { requireUserId } from "~/session.server";
 import { Item } from "@prisma/client";
 
 interface Props {
   shopping?: Shopping;
+  sortable?: boolean;
 }
 
 export async function actionRequest({ request }: ActionArgs) {
   const userId = await requireUserId(request);
   const formData = await request.formData();
   const id = formData.get("id");
+  console.log(id);
   const title = formData.get("title");
+  console.log(title);
   const itemList = formData.get("items");
   const submit = formData.get("submit");
   const items = JSON.parse(itemList as string);
@@ -37,7 +44,7 @@ export async function actionRequest({ request }: ActionArgs) {
     if (typeof id === "string") {
       await deleteShopping({ userId, id });
     }
-    return redirect("/");
+    return redirect("/shopping");
   }
 
   if (typeof id !== "string") {
@@ -83,14 +90,19 @@ export async function actionRequest({ request }: ActionArgs) {
   }
 
   const shoppingList =
-    id &&
-    id !== "" &&
-    (await editShopping({ id, title, body, items: properArray }));
+    id && id !== ""
+      ? await editShopping({ id, title, body, items: properArray })
+      : await createShopping({
+          title,
+          body,
+          items: properArray,
+          userId,
+        });
 
-  return redirect(request.headers.get("Referer"));
+  return redirect("/shopping");
 }
 
-export function ShoppingContainer({ shopping }: Props) {
+export function ShoppingContainer({ shopping, sortable }: Props) {
   const user = useOptionalUser();
   const actionData = useActionData<typeof action>();
   const [title, setTitle] = useState(shopping?.title ? shopping?.title : "");

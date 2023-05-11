@@ -1,7 +1,7 @@
-export type Ingredient {
-  id: number;
+export type Ingredient = {
+  id: string | number;
   description: string;
-}
+};
 
 export type Recipe = {
   id: string;

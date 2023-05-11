@@ -12,6 +12,7 @@ type Item {
   description String
   bought Boolean
   recipe String?
+  recipeId String?
 }
 
 type Ingredient {

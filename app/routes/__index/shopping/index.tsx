@@ -6,6 +6,7 @@ import { getUserId } from "~/session.server";
 import { ShoppingContainer } from "~/components/ShoppingContainer";
 import { useState } from "react";
 import { getAllShopping } from "~/models/shopping.server";
+import { getTranslation } from "~/models/languages";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
@@ -17,24 +18,24 @@ export default function ShoppingIndexPage() {
   const user = useOptionalUser();
   const data = user ? useLoaderData<typeof loader>() : { allShopping: [] };
   const [selectedShopping, setSelectedShopping] = useState(
-    data.allShopping.length > 0 ? data.allShopping.at(-1) : null
+    data.allShopping.length > 0 ? data.allShopping.at(0) : null
   );
   return (
     <>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto my-4">
+        <h1 className="card-title my-4">
+          {getTranslation("SHOPPING_LISTS", user?.language)}
+        </h1>
         <table className="table table-compact w-full">
-          <thead>
-            <tr>
-              <th></th>
-            </tr>
-          </thead>
           <tbody>
             {data.allShopping.length ? (
               data.allShopping.map((shopping) => (
                 <tr>
                   <td
                     onClick={() => setSelectedShopping(shopping)}
-                    className="cursor-pointer  bg-white"
+                    className={`cursor-pointer bg-white ${
+                      shopping.id === selectedShopping?.id && "font-extrabold"
+                    }`}
                   >
                     {" "}
                     {shopping.title

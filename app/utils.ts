@@ -71,8 +71,9 @@ export function validateEmail(email: unknown): email is string {
   return typeof email === "string" && email.length > 3 && email.includes("@");
 }
 
-export function generateId(): string {
-  return new ObjectId().toString();
+export function generateId(): number {
+  //return new ObjectId().toString();
+  return Math.floor(Math.random() * Date.now());
 }
 
 export function createListTitle(createdAt: Date, language: string): string {
@@ -87,4 +88,17 @@ export function createListTitle(createdAt: Date, language: string): string {
     default:
       return "List Created at" + formatDate.toLocaleDateString();
   }
+}
+
+export function removeDuplicateObjects(array, property) {
+  const uniqueIds = [];
+  const unique = array.filter((element) => {
+    const isDuplicate = uniqueIds.includes(element[property]);
+    if (!isDuplicate) {
+      uniqueIds.push(element[property]);
+      return true;
+    }
+    return false;
+  });
+  return unique;
 }

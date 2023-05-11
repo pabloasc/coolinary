@@ -1,5 +1,5 @@
 export type ShoppingItem = {
-  id: string;
+  id: string | number;
   description: string;
   bought: boolean;
   recipe: string | null;

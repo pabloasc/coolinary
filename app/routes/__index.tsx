@@ -7,81 +7,104 @@ import { generateId } from "~/utils";
 export default function Index() {
   const user = useOptionalUser();
   const [contextList, setContextList] = useState({
-    id: generateId(),
-    title: '',
-    body: '',
+    cacheId: generateId(),
+    title: "",
+    body: "",
     items: [],
     createdAt: new Date(),
-    userId: user?.id
+    userId: user?.id,
   });
-  
-  const toggleDrawerRef = useRef(null)
+
+  const toggleDrawerRef = useRef(null);
 
   const handleOnClick = useCallback(() => {
     toggleDrawerRef.current.checked = !toggleDrawerRef.current.checked;
   }, [toggleDrawerRef]);
-  
+
   return (
     <>
-    <div className="navbar bg-base-100">
-      <div className="flex-1">
-        <Link to="/">
-          <img alt="coolinary" src="./images/coolinary.png" width="200"></img>
-        </Link>
+      <div className="navbar bg-base-100">
+        <div className="flex-1">
+          <Link to="/">
+            <img alt="coolinary" src="./images/coolinary.png" width="200"></img>
+          </Link>
+        </div>
+        <div className="flex-none">
+          {user ? (
+            <>
+              <div onClick={handleOnClick}>
+                <label tabIndex={0} className="btn btn-ghost btn-circle">
+                  <div className="indicator">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                      />
+                    </svg>
+                    <span className="badge badge-sm indicator-item">
+                      {contextList.items.length}
+                    </span>
+                  </div>
+                </label>
+              </div>
+              <div className="dropdown dropdown-end">
+                <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                  <div className="w-10 rounded-full">
+                    <img alt={user?.email} src={user?.image} />
+                  </div>
+                </label>
+                <ul
+                  tabIndex={0}
+                  className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+                >
+                  <li>
+                    <Link to="/shopping">Your lists</Link>
+                  </li>
+                  <li>
+                    <Link to="/settings/edit">Settings</Link>
+                  </li>
+                  {user && (
+                    <>
+                      <li>
+                        <hr></hr>
+                      </li>
+                      <li>{user.email}</li>
+                      <li>
+                        <Form action="/logout" method="post">
+                          <button
+                            type="submit"
+                            className="w-full rounded-md border border-gray-300 bg-white"
+                          >
+                            Logout
+                          </button>
+                        </Form>
+                      </li>
+                    </>
+                  )}
+                </ul>
+              </div>
+            </>
+          ) : (
+            <Link to="/login">Login</Link>
+          )}
+        </div>
       </div>
-      <div className="flex-none">
-        {user ?
-          <>
-            <div onClick={handleOnClick}>
-              <label tabIndex={0} className="btn btn-ghost btn-circle">
-                <div className="indicator">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                  <span className="badge badge-sm indicator-item">{contextList.items.length}</span>
-                </div>
-              </label>
-            </div>
-            <div className="dropdown dropdown-end">
-              <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                <div className="w-10 rounded-full">
-                  <img alt={user?.email} src={user?.image} />
-                </div>
-              </label>
-              <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
-                <li>
-                  <Link to="/shopping">Your lists</Link>
-                </li>
-                <li>
-                  <Link to="/settings/edit">Settings</Link>
-                </li>
-                {user && (
-                  <>
-                    <li>
-                      <hr></hr>
-                    </li>
-                    <li>{user.email}</li>
-                    <li>
-                      <Form action="/logout" method="post">
-                        <button
-                          type="submit"
-                          className="w-full rounded-md border border-gray-300 bg-white"
-                        >
-                          Logout
-                        </button>
-                      </Form>
-                    </li>
-                  </>
-                )}
-              </ul>
-            </div>
-          </>
-      :  
-                <Link to="/login">Login</Link>
-      }
-      </div>
-    </div>
 
-    <div className="drawer drawer-end">
-      <input id="my-drawer-4" type="checkbox" ref={toggleDrawerRef} className="drawer-toggle" />
+      <div className="drawer drawer-end">
+        <input
+          id="my-drawer-4"
+          type="checkbox"
+          ref={toggleDrawerRef}
+          className="drawer-toggle"
+        />
         {/* DRAWER - PAGE CONTENT */}
         <div className="drawer-content">
           <div className="align-center m-auto w-11/12">
@@ -137,16 +160,15 @@ export default function Index() {
             </div>
           </footer>
         </div>
-        
 
         {/* DRAWER SIDE */}
         <div className="drawer-side">
           <label htmlFor="my-drawer-4" className="drawer-overlay"></label>
-          <div key={contextList.id}>
+          <div key={contextList.cacheId}>
             <ShoppingContainer shopping={contextList}></ShoppingContainer>
           </div>
         </div>
-    </div>
+      </div>
     </>
   );
 }

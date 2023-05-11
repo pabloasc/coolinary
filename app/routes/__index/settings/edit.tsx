@@ -1,12 +1,14 @@
 import type { ActionArgs, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, useActionData, useSearchParams } from "@remix-run/react";
+import { useOptionalUser } from "~/utils";
 import * as React from "react";
 
 import { requireUserId } from "~/session.server";
 
 import { editUser } from "~/models/user.server";
 import { getLanguages } from "~/models/languages";
+import { getTranslation } from "~/models/languages";
 
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
@@ -35,6 +37,7 @@ export default function editSettings() {
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
   const actionData = useActionData<typeof action>();
   const languageRef = React.useRef<HTMLSelectElement>(null);
+  const user = useOptionalUser();
 
   React.useEffect(() => {
     if (actionData?.errors?.language) {
@@ -43,7 +46,11 @@ export default function editSettings() {
   }, [actionData]);
 
   return (
-    <div className="flex min-h-full flex-col justify-center">
+    <div className="flex min-h-full flex-col justify-center  my-4">
+      <h1 className="card-title my-4">
+        {getTranslation("SETTINGS", user?.language)}
+      </h1>
+
       <div className="mx-auto w-full max-w-md px-8">
         <Form method="post" className="space-y-6">
           <div>
