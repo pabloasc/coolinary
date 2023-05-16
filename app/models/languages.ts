@@ -25,6 +25,11 @@ export const getTranslation = (key: string, language: string) => {
       1: "Configuraciones",
       2: "Instellingen",
     },
+    CLOSE: {
+      0: "Close",
+      1: "Cerrar",
+      2: "Sluiten",
+    },
   };
 
   return translations[key][langId];

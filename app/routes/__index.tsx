@@ -3,6 +3,8 @@ import { useOptionalUser } from "~/utils";
 import { useState, useRef, createRef, useCallback } from "react";
 import { ShoppingContainer } from "~/components/ShoppingContainer";
 import { generateId } from "~/utils";
+import { BUTTON_STYLE } from "~/styles/tailwind";
+import { getTranslation } from "~/models/languages";
 
 export default function Index() {
   const user = useOptionalUser();
@@ -106,7 +108,7 @@ export default function Index() {
           className="drawer-toggle"
         />
         {/* DRAWER - PAGE CONTENT */}
-        <div className="drawer-content">
+        <div className="drawer-content overflow-y-hidden">
           <div className="align-center m-auto w-11/12">
             <main className="">
               <Outlet context={[contextList, setContextList]} />
@@ -164,7 +166,19 @@ export default function Index() {
         {/* DRAWER SIDE */}
         <div className="drawer-side">
           <label htmlFor="my-drawer-4" className="drawer-overlay"></label>
-          <div key={contextList.cacheId}>
+          <div
+            key={contextList.cacheId}
+            className="menu p-4 w-80 bg-base-100 text-base-content"
+          >
+            <button
+              name="submit"
+              type="submit"
+              value="add"
+              onClick={handleOnClick}
+              className={BUTTON_STYLE}
+            >
+              {getTranslation("CLOSE", user?.language)}
+            </button>
             <ShoppingContainer shopping={contextList}></ShoppingContainer>
           </div>
         </div>

@@ -2740,6 +2740,10 @@ html {
   width: 16rem;
 }
 
+.w-80 {
+  width: 20rem;
+}
+
 .w-full {
   width: 100%;
 }
@@ -2808,6 +2812,10 @@ html {
 
 .overflow-x-auto {
   overflow-x: auto;
+}
+
+.overflow-y-hidden {
+  overflow-y: hidden;
 }
 
 .rounded {
